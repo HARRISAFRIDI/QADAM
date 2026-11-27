@@ -7,9 +7,10 @@ const base =
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-150 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px select-none";
 
 const variants = {
-  primary: "bg-forest-900 text-white hover:bg-forest-800 shadow-card",
+  primary:
+    "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-[0_8px_18px_-8px_rgb(79_70_229/0.7)] hover:from-blue-700 hover:to-indigo-700",
   secondary: "bg-surface text-forest-900 border border-line-strong hover:border-forest-700 hover:bg-forest-50",
-  gold: "bg-gold-500 text-forest-950 hover:bg-gold-600",
+  gold: "bg-linear-to-r from-amber-400 to-orange-500 text-forest-950 shadow-[0_8px_18px_-8px_rgb(249_115_22/0.7)] hover:from-amber-500 hover:to-orange-600",
   ghost: "text-forest-900 hover:bg-forest-50",
   danger: "bg-danger text-white hover:bg-[#991b1b]",
   link: "text-forest-700 underline-offset-4 hover:underline px-0 h-auto",

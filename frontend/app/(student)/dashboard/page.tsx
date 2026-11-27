@@ -18,22 +18,23 @@ import { Card, CardHeader, EmptyState } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/button";
 import { getMe, pageApi, serverApi } from "@/lib/api/server";
 import type { Exam, HistoryItem, Page } from "@/lib/api/types";
+import { HUES, type Hue } from "@/lib/palette";
 import { MODE_LABEL, cn, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-const MODE_ICON: Record<string, typeof Timer> = {
-  full_mock: Timer,
-  section: Layers,
-  subject: BookOpen,
-  topic: BookOpen,
-  essay: PenLine,
+const MODE_ICON: Record<string, { icon: typeof Timer; hue: Hue }> = {
+  full_mock: { icon: Timer, hue: HUES.blue },
+  section: { icon: Layers, hue: HUES.violet },
+  subject: { icon: BookOpen, hue: HUES.emerald },
+  topic: { icon: BookOpen, hue: HUES.emerald },
+  essay: { icon: PenLine, hue: HUES.orange },
 };
 
-/** Each test gets its own accent so the two cards are easy to tell apart. */
+/** Each test gets its own colour family so the two cards are easy to tell apart. */
 const EXAM_STYLE = {
-  HAT: { icon: GraduationCap, band: "bg-forest-50", tile: "bg-forest-900 text-white", ring: "group-hover:border-forest-600" },
-  USAT: { icon: School, band: "bg-gold-100", tile: "bg-gold-500 text-forest-950", ring: "group-hover:border-gold-500" },
+  HAT: { icon: GraduationCap, hue: HUES.blue },
+  USAT: { icon: School, hue: HUES.orange },
 } as const;
 
 function pct(h: HistoryItem): number | null {
@@ -69,19 +70,21 @@ export default async function DashboardPage() {
   return (
     <>
       {/* Welcome banner */}
-      <section className="relative mb-8 overflow-hidden rounded-2xl border border-forest-100 bg-forest-50">
-        <StepsArt className="pointer-events-none absolute -right-6 bottom-0 hidden h-44 w-auto md:block lg:right-6" />
-        <div className="relative px-5 py-7 sm:px-8 sm:py-8 md:pr-72">
-          <p lang="ur" dir="rtl" className="urdu text-left text-xl text-forest-700">
+      <section className="relative mb-8 overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-violet-600 text-white shadow-[0_24px_48px_-20px_rgb(79_70_229/0.55)]">
+        <span className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-sky-400/30 blur-3xl" aria-hidden />
+        <span className="pointer-events-none absolute -bottom-24 right-10 h-72 w-72 rounded-full bg-fuchsia-400/30 blur-3xl" aria-hidden />
+        <StepsArt className="pointer-events-none absolute -right-6 bottom-0 hidden h-48 w-auto md:block lg:right-8" />
+        <div className="relative px-5 py-7 sm:px-8 sm:py-9 md:pr-72">
+          <p lang="ur" dir="rtl" className="urdu text-left text-xl text-sky-100">
             السلام علیکم، خوش آمدید
           </p>
-          <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">Welcome back, {firstName}</h1>
-          <p className="mt-1.5 max-w-xl text-ink-soft">Choose your test to see the mocks and practice for your category.</p>
-          <dl className="mt-6 grid max-w-lg grid-cols-3 divide-x divide-forest-100 rounded-xl border border-forest-100 bg-surface shadow-card">
+          <h1 className="mt-1 text-2xl font-extrabold text-white sm:text-4xl">Welcome back, {firstName}</h1>
+          <p className="mt-2 max-w-xl text-blue-50/90">Choose your test to see the mocks and practice for your category.</p>
+          <dl className="mt-7 grid max-w-lg grid-cols-3 gap-2 sm:gap-3">
             {stats.map((s) => (
-              <div key={s.label} className="min-w-0 px-3 py-3 sm:px-4">
-                <dt className="text-xs font-medium text-muted">{s.label}</dt>
-                <dd className="tabular mt-0.5 truncate text-base font-bold text-forest-950 sm:text-lg">{s.value}</dd>
+              <div key={s.label} className="min-w-0 rounded-2xl border border-white/20 bg-white/15 px-3 py-3 backdrop-blur-sm sm:px-4">
+                <dt className="text-xs font-medium text-blue-50/85">{s.label}</dt>
+                <dd className="tabular mt-0.5 truncate text-lg font-extrabold text-white sm:text-xl">{s.value}</dd>
               </div>
             ))}
           </dl>
@@ -136,6 +139,7 @@ export default async function DashboardPage() {
       <div className="grid gap-5 md:grid-cols-2">
         {exams.map((exam) => {
           const style = EXAM_STYLE[exam.code] ?? EXAM_STYLE.HAT;
+          const { hue } = style;
           const Icon = style.icon;
           const first = exam.categories[0];
           const cells = [
@@ -148,34 +152,44 @@ export default async function DashboardPage() {
               key={exam.id}
               href={`/prepare/${exam.code.toLowerCase()}`}
               className={cn(
-                "group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-hover",
-                style.ring,
+                "group flex flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1",
+                hue.hover,
               )}
             >
-              <div className={cn("flex items-center gap-4 px-6 py-5", style.band)}>
-                <span className={cn("grid h-12 w-12 shrink-0 place-items-center rounded-xl shadow-card", style.tile)}>
-                  <Icon className="h-6 w-6" aria-hidden />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-2xl font-extrabold tracking-tight text-forest-950">{exam.code}</p>
-                  <p className="truncate text-sm font-medium text-ink-soft">{exam.name}</p>
+              <div className={cn("relative overflow-hidden px-6 pb-6 pt-5 text-white", hue.grad)}>
+                <Icon
+                  className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 text-white/10 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                  aria-hidden
+                />
+                <span className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10" aria-hidden />
+                <div className="relative flex items-center gap-4">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                    <Icon className="h-6 w-6" aria-hidden />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-3xl font-extrabold tracking-tight text-white">{exam.code}</p>
+                    <p className="truncate text-sm font-medium text-white/90">{exam.name}</p>
+                  </div>
                 </div>
+                <span className="relative mt-4 inline-flex items-center rounded-full bg-white/20 px-3 py-1 text-xs font-semibold ring-1 ring-white/25">
+                  {first?.essay_duration_min ? "MCQs + 2 essays" : "MCQs only, no essays"}
+                </span>
               </div>
-              <dl className="grid grid-cols-3 divide-x divide-line border-y border-line">
+              <dl className="grid grid-cols-3 gap-2 p-4 sm:gap-3 sm:p-5">
                 {cells.map((c) => (
-                  <div key={c.k} className="px-5 py-4">
+                  <div key={c.k} className={cn("rounded-2xl border px-3 py-3 sm:px-4", hue.soft, hue.softBorder)}>
                     <dt className="text-xs font-medium text-muted">{c.k}</dt>
-                    <dd className="tabular mt-0.5 text-xl font-bold text-forest-950">{c.v}</dd>
+                    <dd className={cn("tabular mt-0.5 text-xl font-extrabold sm:text-2xl", hue.text)}>{c.v}</dd>
                   </div>
                 ))}
               </dl>
-              <div className="flex flex-1 items-center justify-between gap-3 px-6 py-4">
-                <span className="text-sm text-muted">
-                  {first?.essay_duration_min ? "MCQs plus 2 essays" : "MCQs only, no essays"}
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-forest-700">
+              <div className="mt-auto flex items-center justify-between gap-3 border-t border-line px-6 py-4">
+                <span className="text-sm text-muted">Categories, mocks and practice</span>
+                <span className={cn("inline-flex items-center gap-2 text-sm font-bold", hue.text)}>
                   Start preparing
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+                  <span className={cn("grid h-8 w-8 place-items-center rounded-full transition-transform group-hover:translate-x-1", hue.tile)}>
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </span>
                 </span>
               </div>
             </Link>
@@ -184,7 +198,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent attempts */}
-      <Card className="mt-10 overflow-hidden rounded-2xl">
+      <Card className="mt-10 overflow-hidden rounded-3xl">
         <CardHeader
           title="Recent attempts"
           description={history.total > 0 ? "Your latest practice and mocks" : undefined}
@@ -210,16 +224,16 @@ export default async function DashboardPage() {
         ) : (
           <ul className="divide-y divide-line">
             {history.items.map((h) => {
-              const Icon = MODE_ICON[h.mode] ?? FileText;
+              const { icon: Icon, hue } = MODE_ICON[h.mode] ?? { icon: FileText, hue: HUES.sky };
               const p = pct(h);
               const tone = p !== null ? scoreTone(p) : null;
               return (
                 <li key={h.id}>
                   <Link
                     href={h.status === "in_progress" ? `/attempt/${h.id}` : `/results/${h.id}`}
-                    className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-forest-50/60"
+                    className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-slate-50"
                   >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-forest-50 text-forest-700">
+                    <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-2xl", hue.tile)}>
                       <Icon className="h-5 w-5" aria-hidden />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -274,24 +288,25 @@ function ActionCard({
   cta: string;
 }) {
   const blue = accent === "blue";
+  const hue = blue ? HUES.blue : HUES.orange;
   return (
-    <div className="relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-6">
-      <span className={cn("absolute inset-y-0 left-0 w-1", blue ? "bg-forest-900" : "bg-gold-500")} aria-hidden />
+    <div
+      className={cn(
+        "relative flex flex-col gap-5 overflow-hidden rounded-3xl border p-5 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-6",
+        blue
+          ? "border-blue-100 bg-linear-to-br from-blue-50 via-white to-indigo-50"
+          : "border-orange-100 bg-linear-to-br from-amber-50 via-white to-orange-50",
+      )}
+    >
+      <span className={cn("absolute inset-x-0 top-0 h-1", hue.line)} aria-hidden />
       <div className="flex min-w-0 gap-4">
-        <span
-          className={cn(
-            "grid h-11 w-11 shrink-0 place-items-center rounded-xl",
-            blue ? "bg-forest-50 text-forest-700" : "bg-gold-100 text-gold-700",
-          )}
-        >
-          {icon}
-        </span>
+        <span className={cn("grid h-12 w-12 shrink-0 place-items-center rounded-2xl", hue.tile)}>{icon}</span>
         <div className="min-w-0">
-          <p className={cn("text-sm font-semibold", blue ? "text-muted" : "text-gold-700")}>{eyebrow}</p>
+          <p className={cn("text-sm font-semibold", hue.text)}>{eyebrow}</p>
           <p className="mt-0.5 truncate text-lg font-bold text-forest-950">{title}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {chips.map(({ icon: ChipIcon, text }) => (
-              <span key={text} className="inline-flex items-center gap-1 rounded-full bg-paper px-2.5 py-1 text-xs font-medium text-ink-soft">
+              <span key={text} className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-2.5 py-1 text-xs font-medium text-ink-soft">
                 <ChipIcon className="h-3.5 w-3.5 text-muted" aria-hidden /> {text}
               </span>
             ))}
@@ -309,12 +324,12 @@ function ActionCard({
 function StepsArt({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 260 180" className={className} aria-hidden>
-      <rect x="20" y="120" width="60" height="60" rx="10" fill="#dbeafe" />
-      <rect x="90" y="84" width="60" height="96" rx="10" fill="#93c5fd" />
-      <rect x="160" y="46" width="60" height="134" rx="10" fill="#2563eb" />
-      <rect x="188" y="6" width="4" height="42" rx="2" fill="#0f172a" />
-      <path d="M192 8 L226 18 L192 28 Z" fill="#f59e0b" />
-      <circle cx="50" cy="104" r="7" fill="#f59e0b" />
+      <rect x="20" y="120" width="60" height="60" rx="10" fill="#ffffff" fillOpacity="0.18" />
+      <rect x="90" y="84" width="60" height="96" rx="10" fill="#ffffff" fillOpacity="0.32" />
+      <rect x="160" y="46" width="60" height="134" rx="10" fill="#ffffff" fillOpacity="0.9" />
+      <rect x="188" y="6" width="4" height="42" rx="2" fill="#ffffff" />
+      <path d="M192 8 L226 18 L192 28 Z" fill="#fbbf24" />
+      <circle cx="50" cy="104" r="7" fill="#fbbf24" />
     </svg>
   );
 }

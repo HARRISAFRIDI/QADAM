@@ -23,7 +23,7 @@ Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text 
 
 **Design.** The look is clean and plain, so students don't have to work out how to use it.
 
-- **Colours:** the main colour is the deep green of the Pakistan flag (`#01411c`), on white and a light cool grey. A warm amber is used only for small highlights, such as a marked question.
+- **Colours:** the main colour is royal blue (`#2563eb`) on white and a light cool grey, with amber for small highlights. Cards use six colour families (blue, violet, emerald, orange, sky, rose) from `frontend/lib/palette.ts`: each card gets its own gradient header or icon, so cards next to each other are easy to tell apart. White text is only placed on the darker gradient shades, so it stays readable.
 - **Urdu:** a few short Urdu phrases appear in Nastaliq script on the landing page and dashboard, for example "آپ کا اگلا قدم یہیں سے شروع ہوتا ہے" and "السلام علیکم، خوش آمدید", so the site feels made for Pakistani students.
 - **Phones and slow networks:** every page works on a phone. The exam screen saves answers as the student goes, so a dropped connection does not lose work.
 

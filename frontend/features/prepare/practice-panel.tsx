@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/button";
 import { api, errorMessage } from "@/lib/api/client";
 import type { SectionOut } from "@/lib/api/types";
+import { hueAt, type Hue } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 
 const COUNTS = [10, 20, 30, 50];
@@ -38,10 +39,10 @@ export function PracticePanel({ category, sections }: { category: string; sectio
   return (
     <div>
       {/* Session settings */}
-      <div className="flex flex-col gap-3 rounded-lg border border-line bg-paper px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-ink-soft">Questions</span>
-          <div className="flex rounded-md border border-line-strong bg-surface p-0.5" role="radiogroup" aria-label="Questions per session">
+          <div className="flex rounded-xl bg-sage-100 p-1" role="radiogroup" aria-label="Questions per session">
             {COUNTS.map((n) => (
               <button
                 key={n}
@@ -50,8 +51,10 @@ export function PracticePanel({ category, sections }: { category: string; sectio
                 aria-checked={count === n}
                 onClick={() => setCount(n)}
                 className={cn(
-                  "tabular h-8 rounded px-3 text-sm font-bold transition-colors",
-                  count === n ? "bg-forest-900 text-white" : "text-ink-soft hover:bg-forest-50",
+                  "tabular h-8 rounded-lg px-3 text-sm font-bold transition-colors",
+                  count === n
+                    ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-[0_4px_10px_-4px_rgb(79_70_229/0.7)]"
+                    : "text-ink-soft hover:bg-white",
                 )}
               >
                 {n}
@@ -76,11 +79,12 @@ export function PracticePanel({ category, sections }: { category: string; sectio
         <Layers className="h-4 w-4" aria-hidden /> Section-wise practice
       </h3>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {sections.map((s) => {
+        {sections.map((s, i) => {
           const key = `section-${s.id}`;
           return (
             <PracticeCard
               key={s.id}
+              hue={hueAt(i)}
               icon={<Layers className="h-5 w-5" aria-hidden />}
               title={s.name}
               sub={`${s.mcq_count} MCQs in the exam`}
@@ -102,12 +106,14 @@ export function PracticePanel({ category, sections }: { category: string; sectio
         <BookOpen className="h-4 w-4" aria-hidden /> Subject-wise practice
       </h3>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {multiSubject.flatMap((s) =>
-          s.subjects.map((sub) => {
+        {multiSubject
+          .flatMap((s) => s.subjects.map((sub) => ({ s, sub })))
+          .map(({ s, sub }, i) => {
             const key = `subject-${sub.id}`;
             return (
               <PracticeCard
                 key={sub.id}
+                hue={hueAt(i + 2)}
                 icon={<BookOpen className="h-5 w-5" aria-hidden />}
                 title={sub.name}
                 sub={`${s.name}, ${sub.mcq_count} in the exam`}
@@ -118,8 +124,7 @@ export function PracticePanel({ category, sections }: { category: string; sectio
                 onClick={() => start("subject", sub.id, key)}
               />
             );
-          }),
-        )}
+          })}
       </div>
       </>
       )}
@@ -128,6 +133,7 @@ export function PracticePanel({ category, sections }: { category: string; sectio
 }
 
 function PracticeCard({
+  hue,
   icon,
   title,
   sub,
@@ -137,6 +143,7 @@ function PracticeCard({
   disabled,
   onClick,
 }: {
+  hue: Hue;
   icon: React.ReactNode;
   title: string;
   sub: string;
@@ -152,15 +159,25 @@ function PracticeCard({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="group flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4 text-left shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-forest-600 hover:shadow-hover disabled:pointer-events-none disabled:opacity-60"
+      className={cn(
+        "group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-4 pt-5 text-left shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 disabled:pointer-events-none disabled:opacity-60",
+        hue.hover,
+      )}
     >
+      <span className={cn("absolute inset-x-0 top-0 h-1", hue.line)} aria-hidden />
       <span className="flex items-start gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-forest-50 text-forest-700">{icon}</span>
+        <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-2xl", hue.tile)}>{icon}</span>
         <span className="min-w-0 flex-1">
           <span className="block font-bold leading-snug text-forest-950">{title}</span>
           <span className="block truncate text-xs text-muted">{sub}</span>
         </span>
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-forest-900 text-white transition-colors group-hover:bg-forest-800">
+        <span
+          className={cn(
+            "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-[transform,background-color,color] duration-300 group-hover:scale-110",
+            hue.soft,
+            hue.text,
+          )}
+        >
           {busy ? <Spinner className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" aria-hidden />}
         </span>
       </span>
@@ -171,7 +188,7 @@ function PracticeCard({
         </span>
         <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-sage-100">
           <span
-            className={cn("block h-full rounded-full", ready >= 100 ? "bg-success" : ready > 0 ? "bg-forest-600" : "bg-sage-300")}
+            className={cn("block h-full rounded-full", ready >= 100 ? "bg-emerald-500" : ready > 0 ? hue.bar : "bg-sage-300")}
             style={{ width: `${Math.max(ready, available ? 4 : 0)}%` }}
           />
         </span>

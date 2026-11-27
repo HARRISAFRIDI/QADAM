@@ -110,9 +110,16 @@ export function StatTile({
   sub?: ReactNode;
   tone?: "neutral" | "success" | "danger" | "gold";
 }) {
-  const color = { neutral: "text-forest-950", success: "text-success", danger: "text-danger", gold: "text-gold-700" }[tone];
+  const color = { neutral: "text-blue-700", success: "text-success", danger: "text-danger", gold: "text-gold-700" }[tone];
+  const accent = {
+    neutral: "bg-linear-to-r from-blue-500 to-indigo-500",
+    success: "bg-linear-to-r from-emerald-500 to-teal-500",
+    danger: "bg-linear-to-r from-rose-500 to-red-500",
+    gold: "bg-linear-to-r from-amber-400 to-orange-500",
+  }[tone];
   return (
-    <div className="rounded-xl border border-line bg-surface px-4 py-3.5 shadow-card">
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-surface px-4 py-3.5 shadow-card">
+      <span className={cn("absolute inset-x-0 top-0 h-1", accent)} aria-hidden />
       <p className="text-xs font-semibold text-muted">{label}</p>
       <p className={cn("tabular mt-1 text-2xl font-bold", color)}>{value}</p>
       {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}
