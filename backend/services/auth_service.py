@@ -38,11 +38,14 @@ def clear_session_cookie(response: Response) -> None:
 
 
 async def me_payload(db: AsyncSession, user: User) -> dict:
-    preferred = None
-    if user.preferred_category_id:
+    preferred = target_exam = None
+    if user.preferred_category_id or user.target_exam_id:
         t = await get_taxonomy(db)
-        cat = t.categories.get(user.preferred_category_id)
+        cat = t.categories.get(user.preferred_category_id) if user.preferred_category_id else None
         preferred = cat["code"] if cat else None
+        exam_id = cat["exam_id"] if cat else user.target_exam_id
+        exam = t.exams.get(exam_id) if exam_id else None
+        target_exam = exam["code"] if exam else None
     return {
         "id": user.id,
         "email": user.email,
@@ -51,6 +54,8 @@ async def me_payload(db: AsyncSession, user: User) -> dict:
         "city": user.city,
         "role": user.role,
         "preferred_category": preferred,
+        "target_exam": target_exam,
+        "daily_goal": user.daily_goal,
         "created_at": user.created_at,
     }
 
@@ -112,6 +117,8 @@ async def update_profile(db: AsyncSession, user: User, data: ProfileUpdateIn) ->
         cat = t.category(data.preferred_category)
         user.preferred_category_id = cat["id"]
         user.target_exam_id = cat["exam_id"]
+    if data.daily_goal is not None:
+        user.daily_goal = data.daily_goal
     await db.commit()
     return user
 

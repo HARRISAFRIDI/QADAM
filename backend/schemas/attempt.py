@@ -9,8 +9,12 @@ from schemas.common import OptionLetter
 
 class PracticeIn(BaseModel):
     category: str = Field(max_length=24)
-    mode: Literal["subject", "section"]
-    ref_id: int  # subject_id / section_id
+    # subject / section: ref_id is required.
+    # quiz: mixed questions from the whole category, or one subject when ref_id is set.
+    # mistakes: the student's own wrong / skipped / flagged questions (ref_id = subject filter).
+    mode: Literal["subject", "section", "quiz", "mistakes"]
+    ref_id: int | None = None
+    difficulty: Literal["easy", "medium", "hard"] | None = None
     count: int = Field(default=20, ge=5, le=100)
     timed: bool = False
 

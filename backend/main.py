@@ -7,7 +7,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
-from api.routes import attempts, auth, catalog, health, results
+from api.routes import attempts, auth, catalog, health, progress, results
 from api.routes.admin import routes as admin_routes
 from core.config import get_settings
 from core.errors import install_error_handlers
@@ -46,7 +46,14 @@ if settings.cors_origins:
     )
 
 v1 = APIRouter(prefix="/api/v1")
-for r in (health.router, auth.router, catalog.router, attempts.router, results.router):
+for r in (
+    health.router,
+    auth.router,
+    catalog.router,
+    attempts.router,
+    results.router,
+    progress.router,
+):
     v1.include_router(r)
 v1.include_router(admin_routes.router)
 app.include_router(v1)

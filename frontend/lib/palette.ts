@@ -81,3 +81,10 @@ const ORDER: HueName[] = ["blue", "violet", "emerald", "orange", "sky", "rose"];
 export function hueAt(i: number): Hue {
   return HUES[ORDER[((i % ORDER.length) + ORDER.length) % ORDER.length]];
 }
+
+/** Colour for a score or accuracy percentage: green 70+, amber 40+, red below. */
+export function scoreTone(p: number) {
+  if (p >= 70) return { text: "text-emerald-700", bar: "bg-emerald-500", soft: "bg-emerald-50" };
+  if (p >= 40) return { text: "text-amber-700", bar: "bg-amber-500", soft: "bg-amber-50" };
+  return { text: "text-rose-700", bar: "bg-rose-500", soft: "bg-rose-50" };
+}

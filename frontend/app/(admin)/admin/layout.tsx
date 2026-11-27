@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
-import { AppHeader } from "@/components/shared/app-header";
+import { AppShell, SIDEBAR_COOKIE } from "@/components/shared/app-shell";
 import { requireAdmin } from "@/lib/api/server";
 
 export const metadata: Metadata = { title: { default: "Admin", template: "%s | QADAM Admin" }, robots: { index: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const me = await requireAdmin();
+  const [me, jar] = await Promise.all([requireAdmin(), cookies()]);
   return (
-    <div className="flex min-h-dvh flex-col">
-      <AppHeader me={me} admin />
-      <main className="container-page flex-1 py-6 md:py-8">{children}</main>
-    </div>
+    <AppShell me={me} admin initialCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}>
+      {children}
+    </AppShell>
   );
 }

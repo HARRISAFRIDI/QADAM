@@ -1,11 +1,17 @@
 # QADAM (قدم)
 
-QADAM is a free website where Pakistani students prepare for the **HAT** and **USAT** entry tests. A student picks a test and a category, then:
+QADAM is a free website where Pakistani students prepare for the **HAT** and **USAT** entry tests. When a student signs up, a short **onboarding** asks for their test (HAT or USAT), their category and a daily question goal. That choice is their **test track**: the dashboard, practice, quizzes and mocks then show only that test. They can switch track any time in **My Account**. The student:
 
 - takes a **full mock test** with the real timer and the official number of questions from each subject,
 - practises **one section** at a time, or **one subject** inside a section that has several subjects, such as Physics in "Category Subjects" (there is no topic-wise practice, because each topic has only a few questions),
 - writes the two **USAT essays**, either by typing them or by writing on paper and giving themselves a score (75%, 85% or a random 70–90%),
-- sees a **result** with the score by section and subject, the correct answers and a solution for each question.
+- sees a **result** with the score by section and subject, the correct answers and a solution for each question,
+- takes **quizzes** (mixed or one subject, 10–30 questions, timed or untimed) with instant feedback and an explanation for each answer,
+- filters **practice** by difficulty (easy, medium, hard),
+- revises from the **Mistake Notebook**: every question they got wrong, skipped or flagged is kept there until they answer it correctly in a later session,
+- follows their **dashboard**: progress through the question bank, study streak, accuracy, scores, weak subjects, daily and weekly goals, achievements, recent activity and suggestions based on their answers ("Strengthen Physics", "Revise 12 mistakes", "Take a full mock").
+
+**Built in phases.** Phase 1 (above) is live. The sidebar already shows the next sections marked **Soon**: **Study Plans** (30-day, 14-day and custom) and **Memorize** (flashcards, formulas, spaced repetition) in phase 2; **Learn** (lessons), the **Discussion Forum** (moderated by admins) and the **More** pages (past papers, syllabus, test dates, guides, FAQs, feedback) in phase 3. My Account shows the **Free plan**; a paid plan comes later.
 
 Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text files), and can **edit, publish/unpublish or delete** any question from the question list. Deleting a question that students have already used archives it instead, so old results stay correct. Admins also build fixed mock papers, grade typed essays and manage students.
 
@@ -26,6 +32,8 @@ Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text 
 - **Colours:** the main colour is royal blue (`#2563eb`) on white and a light cool grey, with amber for small highlights. Cards use six colour families (blue, violet, emerald, orange, sky, rose) from `frontend/lib/palette.ts`: each card gets its own gradient header or icon, so cards next to each other are easy to tell apart. White text is only placed on the darker gradient shades, so it stays readable.
 - **Urdu:** a few short Urdu phrases appear in Nastaliq script on the landing page and dashboard, for example "آپ کا اگلا قدم یہیں سے شروع ہوتا ہے" and "السلام علیکم، خوش آمدید", so the site feels made for Pakistani students.
 - **Phones and slow networks:** every page works on a phone. The exam screen saves answers as the student goes, so a dropped connection does not lose work.
+
+- **Navigation:** a fixed left sidebar with icons, grouped into Prepare and Community, with My Account at the bottom. It can be collapsed to icons only (the choice is remembered), and on phones it opens as a drawer from a menu button.
 
 **Main folders**
 
@@ -136,6 +144,8 @@ The tables in simple words:
 - **files, papers**: uploaded papers, answer sheets and solutions.
 - **bookmarks, audit_logs, rate_limits**: saved questions, a log of admin actions, and login/request limits.
 
+The dashboard numbers and the Mistake Notebook are worked out from **attempts** and **attempt_questions**, so they need no extra tables. Days (for the streak and goals) are counted in Pakistan time.
+
 ```mermaid
 erDiagram
     exams ||--o{ categories : has
@@ -152,6 +162,7 @@ erDiagram
     topics |o--o{ questions : tags
 
     users ||--o{ attempts : takes
+    categories |o--o{ users : "test track"
     categories ||--o{ attempts : for
     mock_tests |o--o{ attempts : "fixed paper"
     attempts ||--o{ attempt_questions : contains
@@ -175,7 +186,9 @@ erDiagram
         string password_hash
         string full_name
         string role "student or admin"
-        int preferred_category_id FK
+        int target_exam_id FK
+        int preferred_category_id FK "test track"
+        int daily_goal "questions per day, 5-200"
         int token_version
     }
     exams {
@@ -230,7 +243,7 @@ erDiagram
         uuid user_id FK
         int category_id FK
         int mock_test_id FK
-        string mode "subject, section, full_mock, essay"
+        string mode "subject, section, quiz, mistakes, full_mock, essay"
         string status "in_progress, submitted"
         timestamp deadline_at
         string essay_status

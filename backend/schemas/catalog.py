@@ -55,7 +55,9 @@ class MockBrief(BaseModel):
 
 class CategoryOverview(BaseModel):
     exam: dict  # {id, code, name}
-    category: dict  # {id, code, name, description, disciplines, mcq_duration_min, essay_duration_min}
+    category: (
+        dict  # {id, code, name, description, disciplines, mcq_duration_min, essay_duration_min}
+    )
     total_mcqs: int
     total_available: int
     sections: list[SectionOut]

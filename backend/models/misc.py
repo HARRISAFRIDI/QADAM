@@ -57,14 +57,18 @@ class Paper(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
     title: Mapped[str] = mapped_column(String(200))
     exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id", ondelete="RESTRICT"))
-    category_id: Mapped[int | None] = mapped_column(ForeignKey("categories.id", ondelete="SET NULL"))
+    category_id: Mapped[int | None] = mapped_column(
+        ForeignKey("categories.id", ondelete="SET NULL")
+    )
     section_id: Mapped[int | None] = mapped_column(ForeignKey("sections.id", ondelete="SET NULL"))
     subject_id: Mapped[int | None] = mapped_column(ForeignKey("subjects.id", ondelete="SET NULL"))
     topic_id: Mapped[int | None] = mapped_column(ForeignKey("topics.id", ondelete="SET NULL"))
     year: Mapped[int | None] = mapped_column(SmallInteger)
     duration_min: Mapped[int | None] = mapped_column(SmallInteger)
     total_marks: Mapped[int | None] = mapped_column(SmallInteger)
-    paper_file_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("files.id", ondelete="RESTRICT"))
+    paper_file_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("files.id", ondelete="RESTRICT")
+    )
     answer_sheet_file_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid, ForeignKey("files.id", ondelete="SET NULL")
     )
@@ -118,4 +122,3 @@ class RateLimit(Base):
     key: Mapped[str] = mapped_column(String(200), primary_key=True)
     window_start: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     count: Mapped[int] = mapped_column(Integer)
-

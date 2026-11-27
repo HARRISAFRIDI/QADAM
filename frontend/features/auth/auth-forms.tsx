@@ -92,7 +92,8 @@ export function RegisterForm() {
         },
       });
       const exam = f.get("target_exam");
-      router.replace(exam ? `/prepare/${String(exam).toLowerCase()}` : "/dashboard");
+      // New students pick their test track first.
+      router.replace(exam ? `/onboarding?exam=${String(exam)}` : "/onboarding");
       router.refresh();
     } catch (err) {
       setError(errorMessage(err));

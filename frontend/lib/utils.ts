@@ -40,4 +40,6 @@ export const MODE_LABEL: Record<string, string> = {
   section: "Section practice",
   full_mock: "Full mock test",
   essay: "Essay practice",
+  quiz: "Quiz",
+  mistakes: "Mistake revision",
 };

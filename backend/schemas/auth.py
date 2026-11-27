@@ -36,6 +36,7 @@ class ProfileUpdateIn(BaseModel):
     phone: str | None = Field(default=None, max_length=30)
     city: str | None = Field(default=None, max_length=80)
     preferred_category: str | None = Field(default=None, max_length=24)
+    daily_goal: int | None = Field(default=None, ge=5, le=200)
 
 
 class MeOut(ORM):
@@ -46,6 +47,8 @@ class MeOut(ORM):
     city: str | None
     role: str
     preferred_category: str | None = None
+    target_exam: str | None = None
+    daily_goal: int = 20
     created_at: datetime
 
     @computed_field

@@ -27,7 +27,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from db.base import Base, TimestampMixin
 from utils.ids import uuid7
 
-ATTEMPT_MODES = ("topic", "subject", "section", "full_mock", "essay")
+ATTEMPT_MODES = ("topic", "subject", "section", "full_mock", "essay", "quiz", "mistakes")
 
 
 class MockTest(Base, TimestampMixin):
@@ -99,7 +99,9 @@ class Attempt(Base):
     subject_id: Mapped[int | None] = mapped_column(ForeignKey("subjects.id", ondelete="SET NULL"))
     topic_id: Mapped[int | None] = mapped_column(ForeignKey("topics.id", ondelete="SET NULL"))
     title: Mapped[str] = mapped_column(String(200))
-    status: Mapped[str] = mapped_column(String(12), default="in_progress", server_default="in_progress")
+    status: Mapped[str] = mapped_column(
+        String(12), default="in_progress", server_default="in_progress"
+    )
     question_count: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
@@ -114,7 +116,8 @@ class Attempt(Base):
 
     __table_args__ = (
         CheckConstraint(
-            "mode IN ('topic','subject','section','full_mock','essay')", name="mode_valid"
+            "mode IN ('topic','subject','section','full_mock','essay','quiz','mistakes')",
+            name="mode_valid",
         ),
         CheckConstraint("status IN ('in_progress','submitted')", name="status_valid"),
         CheckConstraint(

@@ -32,6 +32,7 @@ from models import (
     User,
 )
 from schemas.attempt import CheckIn, FullMockIn, PracticeIn, SaveAnswersIn
+from services import progress_service
 from services.taxonomy import Taxonomy, get_taxonomy
 
 PRACTICE_SECONDS_PER_QUESTION = 72  # 120 min / 100 MCQs
@@ -96,24 +97,45 @@ async def create_practice(db: AsyncSession, user: User, data: PracticeIn) -> Att
     # Topic-wise practice was removed: each topic has too few questions.
     topic_id = None
     section_id = subject_id = None
-    if data.mode == "subject":
+    if data.mode in ("subject", "section") and data.ref_id is None:
+        raise bad_request("Choose a subject or section.")
+    if data.mode in ("subject", "quiz", "mistakes") and data.ref_id is not None:
         if data.ref_id not in allowed:
             raise not_found("Subject")
+    if data.mode == "subject":
         subject_id, subject_ids = data.ref_id, [data.ref_id]
         title = f"{t.subjects[data.ref_id]['name']} - Subject Practice"
-    else:
+    elif data.mode == "section":
         subject_ids = [r["subject_id"] for r in bp if r["section_id"] == data.ref_id]
         if not subject_ids:
             raise not_found("Section")
         section_id = data.ref_id
         title = f"{t.sections[data.ref_id]['name']} - Section Practice"
+    else:
+        if data.ref_id is not None:
+            subject_id, subject_ids = data.ref_id, [data.ref_id]
+            name = t.subjects[data.ref_id]["name"]
+        else:
+            subject_ids, name = sorted(allowed), "Mixed"
+        title = f"{name} - Quiz" if data.mode == "quiz" else f"{name} - Mistake Revision"
+    if data.difficulty:
+        title += f" ({data.difficulty.title()})"
 
-    stmt = select(Question.id, Question.subject_id).where(
-        Question.exam_id == cat["exam_id"],
-        Question.status == "published",
-        Question.subject_id.in_(subject_ids),
-    )
-    picked = (await db.execute(stmt.order_by(func.random()).limit(data.count))).all()
+    if data.mode == "mistakes":
+        picked = await progress_service.mistake_question_ids(
+            db, user.id, cat["exam_id"], subject_ids, data.difficulty, data.count
+        )
+        if not picked:
+            raise bad_request("Your Mistake Notebook is empty for this choice.", "no_mistakes")
+    else:
+        stmt = select(Question.id, Question.subject_id).where(
+            Question.exam_id == cat["exam_id"],
+            Question.status == "published",
+            Question.subject_id.in_(subject_ids),
+        )
+        if data.difficulty:
+            stmt = stmt.where(Question.difficulty == data.difficulty)
+        picked = (await db.execute(stmt.order_by(func.random()).limit(data.count))).all()
     if not picked:
         raise bad_request(
             "No published questions are available for this selection yet.", "no_questions"
@@ -196,9 +218,7 @@ async def _generated_paper(db: AsyncSession, t: Taxonomy, cat: dict) -> list[dic
     return paper
 
 
-async def create_full_mock(
-    db: AsyncSession, user: User, data: FullMockIn
-) -> tuple[Attempt, bool]:
+async def create_full_mock(db: AsyncSession, user: User, data: FullMockIn) -> tuple[Attempt, bool]:
     t = await get_taxonomy(db)
     cat = t.category(data.category)
 
@@ -487,7 +507,8 @@ async def check_answer(
     db: AsyncSession, user_id: uuid.UUID, attempt_id: uuid.UUID, position: int, data: CheckIn
 ) -> dict:
     attempt = await _own_attempt(db, user_id, attempt_id)
-    if attempt.mode not in ("topic", "subject", "section"):
+    # Every practice-style mode (subject, section, quiz, mistakes) gets instant feedback.
+    if attempt.mode in ("full_mock", "essay"):
         raise AppError(403, "forbidden", "Answers are revealed only after submitting a mock test.")
     if attempt.status != "in_progress":
         raise conflict("This attempt has already been submitted.", "attempt_submitted")

@@ -12,11 +12,19 @@ import { hueAt, type Hue } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 
 const COUNTS = [10, 20, 30, 50];
+const DIFFICULTIES = [
+  { v: null, label: "Any" },
+  { v: "easy", label: "Easy" },
+  { v: "medium", label: "Medium" },
+  { v: "hard", label: "Hard" },
+] as const;
+type Difficulty = (typeof DIFFICULTIES)[number]["v"];
 
 export function PracticePanel({ category, sections }: { category: string; sections: SectionOut[] }) {
   const router = useRouter();
   const [count, setCount] = useState(20);
   const [timed, setTimed] = useState(false);
+  const [difficulty, setDifficulty] = useState<Difficulty>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const multiSubject = sections.filter((s) => s.subjects.length > 1);
@@ -27,7 +35,7 @@ export function PracticePanel({ category, sections }: { category: string; sectio
     try {
       const { id } = await api<{ id: string }>("/practice", {
         method: "POST",
-        body: { category, mode, ref_id: refId, count, timed },
+        body: { category, mode, ref_id: refId, count, timed, difficulty },
       });
       router.push(`/attempt/${id}`);
     } catch (e) {
@@ -39,7 +47,8 @@ export function PracticePanel({ category, sections }: { category: string; sectio
   return (
     <div>
       {/* Session settings */}
-      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-ink-soft">Questions</span>
           <div className="flex rounded-xl bg-sage-100 p-1" role="radiogroup" aria-label="Questions per session">
@@ -61,6 +70,29 @@ export function PracticePanel({ category, sections }: { category: string; sectio
               </button>
             ))}
           </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-ink-soft">Difficulty</span>
+          <div className="flex rounded-xl bg-sage-100 p-1" role="radiogroup" aria-label="Difficulty">
+            {DIFFICULTIES.map((d) => (
+              <button
+                key={d.label}
+                type="button"
+                role="radio"
+                aria-checked={difficulty === d.v}
+                onClick={() => setDifficulty(d.v)}
+                className={cn(
+                  "h-8 rounded-lg px-3 text-sm font-bold transition-colors",
+                  difficulty === d.v
+                    ? "bg-linear-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_4px_10px_-4px_rgb(139_92_246/0.7)]"
+                    : "text-ink-soft hover:bg-white",
+                )}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </div>
         </div>
         <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-ink-soft">
           <input

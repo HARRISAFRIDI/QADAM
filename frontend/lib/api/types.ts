@@ -11,6 +11,8 @@ export interface Me {
   city: string | null;
   role: "student" | "admin";
   preferred_category: string | null;
+  target_exam: "HAT" | "USAT" | null;
+  daily_goal: number;
   created_at: string;
   is_super_admin: boolean;
 }
@@ -223,4 +225,68 @@ export interface EssayState {
     max_score: number;
     seq: number;
   }[];
+}
+
+// ---------------------------------------------------------------- progress
+
+export interface SubjectStat {
+  id: number;
+  name: string;
+  section: string;
+  answered: number;
+  correct: number;
+  accuracy: number;
+  seen: number;
+  bank: number;
+  coverage: number;
+}
+
+export type RecAction =
+  | { type: "practice"; mode: "quiz" | "subject" | "section" | "mistakes"; ref_id: number | null; count: number }
+  | { type: "link"; href: string };
+
+export interface Overview {
+  category: { code: string; name: string; exam: "HAT" | "USAT" };
+  progress: { percent: number; seen: number; bank: number; answered: number; accuracy: number };
+  streak: {
+    current: number;
+    best: number;
+    active_today: boolean;
+    last14: { date: string; count: number; active: boolean }[];
+  };
+  completed: { attempts: number; mocks: number; quizzes: number };
+  scores: {
+    recent: { id: string; title: string; mode: string; date: string; percent: number }[];
+    average: number | null;
+    best: number | null;
+  };
+  subjects: SubjectStat[];
+  weak_subjects: SubjectStat[];
+  strong_subjects: SubjectStat[];
+  mistakes: { total: number; wrong: number };
+  goals: { key: "daily" | "weekly" | "mock"; label: string; current: number; target: number }[];
+  recommendations: { kind: string; title: string; body: string; action: RecAction }[];
+  achievements: { key: string; title: string; description: string; earned: boolean }[];
+}
+
+export interface MistakeItem {
+  question_id: number;
+  subject: string;
+  subject_id: number;
+  kind: "wrong" | "skipped" | "flagged";
+  flagged: boolean;
+  difficulty: "easy" | "medium" | "hard";
+  seen_at: string;
+  stem: string;
+  image_url: string | null;
+  options: Record<Option, string>;
+  selected: Option | null;
+  correct: Option;
+  explanation: string | null;
+  solution: string | null;
+}
+
+export interface Mistakes extends Page<MistakeItem> {
+  counts: { all: number; wrong: number; skipped: number; flagged: number };
+  subjects: { id: number; name: string; count: number }[];
 }

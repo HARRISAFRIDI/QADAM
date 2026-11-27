@@ -7,6 +7,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    SmallInteger,
     String,
     Uuid,
 )
@@ -32,6 +33,11 @@ class User(Base, TimestampMixin):
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     token_version: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    # Questions per day the student aims for (dashboard goal ring).
+    daily_goal: Mapped[int] = mapped_column(SmallInteger, default=20, server_default="20")
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    __table_args__ = (CheckConstraint("role IN ('student','admin')", name="role_valid"),)
+    __table_args__ = (
+        CheckConstraint("role IN ('student','admin')", name="role_valid"),
+        CheckConstraint("daily_goal BETWEEN 5 AND 200", name="daily_goal_range"),
+    )
