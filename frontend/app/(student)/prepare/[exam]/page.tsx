@@ -23,7 +23,7 @@ export default async function ExamPage({ params }: { params: Promise<{ exam: str
     <>
       <Breadcrumbs items={[{ href: "/dashboard", label: "Dashboard" }, { label: exam.code }]} />
       <PageHeader
-        eyebrow="Step 2 · Choose your category"
+        eyebrow="Choose your category"
         title={exam.name}
         description={
           exam.code === "HAT"

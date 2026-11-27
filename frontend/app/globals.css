@@ -3,37 +3,40 @@
 /* ---------- QADAM design tokens ---------- */
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --font-urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
+  --font-urdu: var(--font-nastaliq), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
 
-  --color-forest-950: #082419;
-  --color-forest-900: #0f3d2e;
-  --color-forest-800: #154a38;
-  --color-forest-700: #1e5a44;
-  --color-forest-600: #2b6e55;
-  --color-forest-100: #dceae1;
-  --color-forest-50: #eef5f0;
+  /* Primary: Pakistan flag green, deepened for text and buttons. */
+  --color-forest-950: #012a15;
+  --color-forest-900: #01411c;
+  --color-forest-800: #0a5230;
+  --color-forest-700: #11683e;
+  --color-forest-600: #1a7d4c;
+  --color-forest-100: #d7ebdf;
+  --color-forest-50: #edf6f0;
 
-  --color-sage-500: #7fa08a;
-  --color-sage-300: #b4cabb;
-  --color-sage-200: #d0ded4;
-  --color-sage-100: #e7efe9;
+  /* Neutral greens for soft fills. */
+  --color-sage-500: #869a8f;
+  --color-sage-300: #b6c5bc;
+  --color-sage-200: #d4ded8;
+  --color-sage-100: #e9efeb;
 
-  --color-gold-700: #7d6223;
-  --color-gold-600: #9a7930;
-  --color-gold-500: #b8923e;
-  --color-gold-200: #ecdcb6;
-  --color-gold-100: #f6eedc;
+  /* One warm accent, used sparingly (timer, marked, essays). */
+  --color-gold-700: #845300;
+  --color-gold-600: #a26a06;
+  --color-gold-500: #d39a2c;
+  --color-gold-200: #f1ddb0;
+  --color-gold-100: #fbf3e1;
 
-  --color-paper: #f8f6f1;
+  --color-paper: #f3f5f4;
   --color-surface: #ffffff;
-  --color-line: #e5e2d9;
-  --color-line-strong: #d3cfc3;
-  --color-ink: #1e2320;
-  --color-ink-soft: #3c443f;
-  --color-muted: #687069;
+  --color-line: #e1e6e3;
+  --color-line-strong: #cbd4ce;
+  --color-ink: #121a16;
+  --color-ink-soft: #35413b;
+  --color-muted: #5d6a63;
 
-  --color-success: #2e7d4f;
-  --color-success-soft: #e5f2ea;
+  --color-success: #1f7a47;
+  --color-success-soft: #e3f2e9;
   --color-danger: #b42318;
   --color-danger-soft: #fbeae8;
   --color-warning: #b7791f;
@@ -44,7 +47,7 @@
   --radius-lg: 12px;
   --radius-xl: 16px;
 
-  --shadow-card: 0 1px 2px rgb(15 35 25 / 0.04), 0 1px 3px rgb(15 35 25 / 0.05);
+  --shadow-card: 0 1px 2px rgb(1 42 21 / 0.05);
   --shadow-raised: 0 10px 30px -12px rgb(15 35 25 / 0.18), 0 2px 6px rgb(15 35 25 / 0.05);
 }
 
@@ -68,7 +71,7 @@
     outline-offset: 2px;
   }
   h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     color: var(--color-forest-950);
   }
 }
@@ -101,4 +104,12 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Urdu Nastaliq needs taller lines than Latin text. */
+@utility urdu {
+  font-family: var(--font-urdu);
+  line-height: 2;
+  font-weight: 400;
+  letter-spacing: 0;
 }

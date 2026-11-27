@@ -5,7 +5,7 @@ from fastapi import APIRouter, Query, Response
 
 from api.dependencies import DB, Claims, CurrentUser
 from schemas.common import OkResponse, Page
-from schemas.essay import EssaySaveIn, EssaysOut
+from schemas.essay import EssaySaveIn, EssaySelfScoreIn, EssaysOut
 from schemas.result import HistoryItem, ResultOut, ReviewOut
 from services import essay_service, result_service
 
@@ -43,6 +43,13 @@ async def my_history(
 @router.post("/attempts/{attempt_id}/essays/start", response_model=EssaysOut)
 async def start_essays(attempt_id: uuid.UUID, claims: Claims, db: DB):
     return await essay_service.start(db, claims.user_id, attempt_id)
+
+
+@router.post("/attempts/{attempt_id}/essays/self-score")
+async def self_score_essays(
+    attempt_id: uuid.UUID, data: EssaySelfScoreIn, claims: Claims, db: DB
+) -> dict:
+    return await essay_service.self_score(db, claims.user_id, attempt_id, data.percent)
 
 
 @router.put("/attempts/{attempt_id}/essays/{essay_type}", response_model=OkResponse)

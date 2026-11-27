@@ -31,6 +31,5 @@ Thumbs.db
 skills-lock.json
 
 # local-only planning docs
-/README.md
 /PLAN.md
 /MASTER_PROMPT.md

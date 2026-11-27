@@ -1,5 +1,7 @@
 """USAT essays: start (server-timed), autosave, submit, admin grading."""
 
+import math
+import random
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -52,6 +54,7 @@ async def _state(db: AsyncSession, attempt: Attempt) -> dict:
     return {
         "attempt_id": attempt.id,
         "title": attempt.title,
+        "mode": attempt.mode,
         "status": attempt.essay_status,
         "server_now": _now(),
         "deadline_at": attempt.essay_deadline_at,
@@ -145,6 +148,62 @@ async def submit(db: AsyncSession, user_id: uuid.UUID, attempt_id: uuid.UUID) ->
     await _finalize(db, attempt)
     await db.commit()
     return {"status": attempt.essay_status}
+
+
+SELF_SCORE_RANDOM_RANGE = (70, 90)
+
+
+async def self_score(
+    db: AsyncSession, user_id: uuid.UUID, attempt_id: uuid.UUID, percent: int | None
+) -> dict:
+    """The student wrote the essays on paper and gives themselves a score.
+
+    `percent` is 75 / 85 (or any 1-100); None means a random percentage in
+    SELF_SCORE_RANDOM_RANGE. Each essay gets that share of its own max marks,
+    is marked graded, and never enters the admin grading queue.
+    """
+    attempt = await _own_attempt(db, user_id, attempt_id, lock=True)
+    if attempt.essay_status == "none":
+        raise bad_request("This attempt has no essay section.")
+    if attempt.mode == "full_mock" and attempt.status != "submitted":
+        raise conflict("Submit the MCQ section first.", "mcq_not_submitted")
+    if attempt.essay_status in ("submitted", "graded"):
+        raise conflict("Essays are already submitted.", "essays_closed")
+    if percent is None:
+        percent = random.randint(*SELF_SCORE_RANDOM_RANGE)
+
+    now = _now()
+    note = f"Self-assessed at {percent}% (written on paper)."
+    # Round the overall total once, then split it, so 85% of 25 is 21 (not 22).
+    total = math.floor(sum(ESSAY_MAX.values()) * percent / 100 + 0.5)
+    left = total
+    scores = {}
+    items = list(ESSAY_MAX.items())
+    for i, (essay_type, max_score) in enumerate(items):
+        if i == len(items) - 1:
+            scores[essay_type] = min(max_score, left)
+        else:
+            scores[essay_type] = min(max_score, math.floor(max_score * percent / 100 + 0.5))
+            left -= scores[essay_type]
+    for essay_type, max_score in items:
+        score = scores[essay_type]
+        await db.execute(
+            pg_insert(EssaySubmission)
+            .values(attempt_id=attempt.id, essay_type=essay_type, max_score=max_score)
+            .on_conflict_do_nothing(index_elements=["attempt_id", "essay_type"])
+        )
+        await db.execute(
+            update(EssaySubmission)
+            .where(EssaySubmission.attempt_id == attempt.id, EssaySubmission.essay_type == essay_type)
+            .values(status="graded", score=score, feedback=note, graded_at=now)
+        )
+    total = sum(scores.values())
+    await db.execute(update(Result).where(Result.attempt_id == attempt.id).values(essay_score=total))
+    attempt.essay_status = "graded"
+    attempt.essay_started_at = attempt.essay_started_at or now
+    attempt.essay_submitted_at = now
+    await db.commit()
+    return {"status": "graded", "percent": percent, "essay_score": total}
 
 
 # ------------------------------------------------------------------ admin

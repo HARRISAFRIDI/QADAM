@@ -36,7 +36,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
         ]}
       />
       <PageHeader
-        eyebrow={`Step 3 · ${ov.exam.code} preparation`}
+        eyebrow={`${ov.exam.code} preparation`}
         title={c.name}
         description={c.disciplines.length ? c.disciplines.join(" · ") : undefined}
       />
@@ -59,18 +59,17 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
 
       {/* Full mock */}
       <section className="mb-10">
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-muted">Step 4 · Choose how to prepare</h2>
+        <h2 className="mb-3 text-sm font-bold text-muted">Choose how to prepare</h2>
         <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-          <Card className="relative overflow-hidden border-forest-900 bg-forest-950 p-6 text-white">
-            <div className="absolute right-0 top-0 h-full w-40 opacity-20 steps-motif" aria-hidden />
-            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold-500">
+          <Card className="border-forest-900 bg-forest-900 p-6 text-white">
+            <p className="flex items-center gap-2 text-sm font-semibold text-forest-100">
               <Timer className="h-4 w-4" aria-hidden /> Full mock test
             </p>
             <h3 className="mt-2 text-2xl font-extrabold text-white">Real exam conditions</h3>
-            <p className="mt-1.5 max-w-lg text-sm text-sage-300">
+            <p className="mt-1.5 max-w-lg text-sm text-forest-100">
               {ov.total_mcqs} MCQs in {c.mcq_duration_min} minutes with the official {c.code} weightage
-              {ov.essays ? `, followed by two essays in ${ov.essays.duration_min} minutes` : ""}. The timer runs on the
-              server, so refreshing or reconnecting is safe.
+              {ov.essays ? `, then two essays in ${ov.essays.duration_min} minutes (type them, or write on paper and self-score)` : ""}.
+              Refreshing the page will not stop the timer or lose your answers.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <AvailabilityBadge available={ov.total_available} required={ov.total_mcqs} />

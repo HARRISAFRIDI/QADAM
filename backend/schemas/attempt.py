@@ -9,8 +9,8 @@ from schemas.common import OptionLetter
 
 class PracticeIn(BaseModel):
     category: str = Field(max_length=24)
-    mode: Literal["topic", "subject", "section"]
-    ref_id: int  # topic_id / subject_id / section_id
+    mode: Literal["subject", "section"]
+    ref_id: int  # subject_id / section_id
     count: int = Field(default=20, ge=5, le=100)
     timed: bool = False
 

@@ -208,6 +208,7 @@ export interface HistoryItem {
 export interface EssayState {
   attempt_id: string;
   title: string;
+  mode: string;
   status: string;
   server_now: string;
   deadline_at: string | null;

@@ -177,6 +177,27 @@ async def test_full_mock_flow(student, admin, question_bank):
     assert res["essays"][0]["word_count"] == 4
 
 
+async def test_essay_self_score(other_student, question_bank):
+    """Student wrote essays on paper: 85% of 25 -> 21, or a random 70-90%."""
+    for percent, expected in ((85, (21, 21)), (None, (18, 23))):
+        r = await other_student.post("/essay-practice", json={"category": "USAT-E"})
+        attempt_id = r.json()["id"]
+        await other_student.post(f"/attempts/{attempt_id}/essays/start")
+        out = (
+            await other_student.post(
+                f"/attempts/{attempt_id}/essays/self-score", json={"percent": percent}
+            )
+        ).json()
+        assert out["status"] == "graded"
+        assert expected[0] <= out["essay_score"] <= expected[1]
+        res = (await other_student.get(f"/results/{attempt_id}")).json()
+        assert res["essay_status"] == "graded" and res["essay_score"] == out["essay_score"]
+        again = await other_student.post(
+            f"/attempts/{attempt_id}/essays/self-score", json={"percent": 75}
+        )
+        assert again.status_code == 409
+
+
 async def test_hat_mock_and_expiry(other_student, question_bank):
     r = await other_student.post("/attempts", json={"category": "HAT-I"})
     attempt_id = r.json()["id"]
@@ -214,11 +235,11 @@ async def test_attempt_isolation(student, other_student, question_bank):
 async def test_practice_check(student, question_bank):
     ov = (await student.get("/categories/USAT-E/overview")).json()
     quant = next(s for s in ov["sections"] if s["code"] == "quantitative")
-    algebra = next(t for t in quant["subjects"][0]["topics"] if t["name"] == "Algebra")
-    assert algebra["available"] >= 30
+    maths = quant["subjects"][0]
+    assert maths["available"] >= 10
     r = await student.post(
         "/practice",
-        json={"category": "USAT-E", "mode": "topic", "ref_id": algebra["id"], "count": 10},
+        json={"category": "USAT-E", "mode": "subject", "ref_id": maths["id"], "count": 10},
     )
     attempt_id = r.json()["id"]
     paper = (await student.get(f"/attempts/{attempt_id}")).json()

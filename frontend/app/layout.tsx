@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Noto_Nastaliq_Urdu, Plus_Jakarta_Sans } from "next/font/google";
 
 import "./globals.css";
 
@@ -10,22 +10,30 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
+// Urdu phrases on the landing page and dashboard.
+const nastaliq = Noto_Nastaliq_Urdu({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  display: "swap",
+  variable: "--font-nastaliq",
+});
+
 export const metadata: Metadata = {
   title: { default: "QADAM - HAT & USAT Preparation", template: "%s | QADAM" },
   description:
-    "QADAM (قدم) - Your Next Step Starts Here. Topic-wise practice, full-length mock tests, USAT essays, results and detailed solutions for HAT and USAT.",
+    "QADAM (قدم) - Your Next Step Starts Here. Subject and section practice, full-length mock tests, USAT essays, results and detailed solutions for HAT and USAT.",
   applicationName: "QADAM",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f3d2e",
+  themeColor: "#01411c",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={`${jakarta.variable} ${nastaliq.variable}`}>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

@@ -93,16 +93,10 @@ async def create_practice(db: AsyncSession, user: User, data: PracticeIn) -> Att
     bp = t.blueprint(cat["id"])
     allowed = {r["subject_id"] for r in bp}
 
+    # Topic-wise practice was removed: each topic has too few questions.
     topic_id = None
     section_id = subject_id = None
-    if data.mode == "topic":
-        topic = t.topics.get(data.ref_id)
-        if topic is None or topic["subject_id"] not in allowed:
-            raise not_found("Topic")
-        topic_id, subject_ids = topic["id"], [topic["subject_id"]]
-        subject_id = topic["subject_id"]
-        title = f"{topic['name']} - Topic Practice"
-    elif data.mode == "subject":
+    if data.mode == "subject":
         if data.ref_id not in allowed:
             raise not_found("Subject")
         subject_id, subject_ids = data.ref_id, [data.ref_id]
@@ -119,8 +113,6 @@ async def create_practice(db: AsyncSession, user: User, data: PracticeIn) -> Att
         Question.status == "published",
         Question.subject_id.in_(subject_ids),
     )
-    if topic_id is not None:
-        stmt = stmt.where(Question.topic_id == topic_id)
     picked = (await db.execute(stmt.order_by(func.random()).limit(data.count))).all()
     if not picked:
         raise bad_request(

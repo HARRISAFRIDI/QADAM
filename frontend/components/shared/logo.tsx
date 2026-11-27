@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden className={cn("h-8 w-8", className)}>
-      <rect width="32" height="32" rx="8" fill="#0f3d2e" />
-      <rect x="6" y="19" width="6" height="7" rx="1.5" fill="#7fa08a" />
-      <rect x="13" y="13" width="6" height="13" rx="1.5" fill="#d0ded4" />
-      <rect x="20" y="6" width="6" height="20" rx="1.5" fill="#b8923e" />
+      <rect width="32" height="32" rx="8" fill="#01411c" />
+      <rect x="6" y="19" width="6" height="7" rx="1.5" fill="#5e9a77" />
+      <rect x="13" y="13" width="6" height="13" rx="1.5" fill="#cfe3d6" />
+      <rect x="20" y="6" width="6" height="20" rx="1.5" fill="#ffffff" />
     </svg>
   );
 }
@@ -22,7 +22,7 @@ export function Logo({ href = "/", inverted = false, className }: { href?: strin
         <span className={cn("text-lg font-extrabold tracking-[0.08em]", inverted ? "text-white" : "text-forest-950")}>
           QADAM
         </span>
-        <span lang="ur" dir="rtl" className={cn("font-urdu text-base leading-none", inverted ? "text-gold-200" : "text-gold-600")}>
+        <span lang="ur" dir="rtl" className={cn("font-urdu text-base leading-none", inverted ? "text-forest-100" : "text-forest-700")}>
           قدم
         </span>
       </span>

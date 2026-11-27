@@ -70,7 +70,7 @@ export default async function ResultPage({
         <div className="grid gap-6 p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
           {hasMcq && <ScoreRing pct={result.percentage} />}
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-600">{MODE_LABEL[result.mode]}</p>
+            <p className="text-sm font-semibold text-forest-700">{MODE_LABEL[result.mode]}</p>
             <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">{result.title}</h1>
             <p className="mt-1 text-sm text-muted">Submitted {formatDate(result.submitted_at)}</p>
             {hasMcq && (
@@ -199,7 +199,7 @@ function ScoreRing({ pct }: { pct: number }) {
           cy="60"
           r={r}
           fill="none"
-          stroke={pct >= 50 ? "#1e5a44" : "#b8923e"}
+          stroke={pct >= 50 ? "#11683e" : "#d39a2c"}
           strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={c}

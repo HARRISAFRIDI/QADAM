@@ -30,7 +30,7 @@ export default async function HistoryPage({ searchParams }: { searchParams: Prom
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b border-line bg-paper text-left text-xs uppercase tracking-wide text-muted">
+              <thead className="border-b border-line bg-paper text-left text-xs text-muted">
                 <tr>
                   <th className="px-5 py-3 font-semibold">Attempt</th>
                   <th className="px-5 py-3 font-semibold">Type</th>

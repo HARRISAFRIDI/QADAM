@@ -1,64 +1,48 @@
-import {
-  BarChart3,
-  BookOpenCheck,
-  CheckCircle2,
-  Clock3,
-  FileText,
-  Layers,
-  PenLine,
-  ShieldCheck,
-  Smartphone,
-  Target,
-} from "lucide-react";
+import { BarChart3, BookOpenCheck, CheckCircle2, Clock3, PenLine, Target } from "lucide-react";
 
 import { LinkButton } from "@/components/ui/button";
 import { HAT, USAT } from "@/lib/exam-data";
 
 export const dynamic = "force-static";
 
+// A real sequence, so numbering is meaningful here.
 const steps = [
-  { n: "01", title: "Choose your test", body: "HAT or USAT. We only show what matters for your exam." },
-  { n: "02", title: "Pick your category", body: "HAT-I to HAT-General, USAT-E to USAT-A, with the official weightage." },
-  { n: "03", title: "Practise your way", body: "Topic, subject or section practice, or a full timed mock." },
-  { n: "04", title: "Review & improve", body: "Section-wise analysis, correct answers and detailed solutions." },
+  { title: "Choose your test", body: "Pick HAT or USAT, then your category. You only see what is in your exam." },
+  { title: "Practise or take a mock", body: "Practise one subject or section, or sit a full mock with the real timer." },
+  { title: "Check your result", body: "See your score by section and subject, with the correct answer and solution for every question." },
 ];
 
 const features = [
-  { icon: Clock3, title: "Real exam timing", body: "Server-timed mocks: 120 minutes for HAT, 100 + 40 minutes for USAT." },
-  { icon: Target, title: "Official weightage", body: "Every mock follows the exact section and subject distribution of your category." },
-  { icon: PenLine, title: "USAT essays", body: "Choose from three argument and three narrative topics, with autosave and word count." },
-  { icon: BarChart3, title: "Clear analytics", body: "Score, accuracy, and section- and subject-wise performance after every attempt." },
-  { icon: BookOpenCheck, title: "Detailed solutions", body: "Review every question with the correct answer, explanation and worked solution." },
-  { icon: Smartphone, title: "Built for mobile", body: "A fast, focused exam interface that works on any phone, even on slow networks." },
+  { icon: Target, title: "Official weightage", body: "Every full mock follows the section and subject split of your category." },
+  { icon: Clock3, title: "Real exam timing", body: "120 minutes for HAT. 100 minutes plus 40 for essays in USAT." },
+  { icon: PenLine, title: "USAT essays", body: "Type your essays here, or write them on paper and give yourself a score." },
+  { icon: BarChart3, title: "Clear results", body: "Score, accuracy and weak areas after every attempt." },
+  { icon: BookOpenCheck, title: "Worked solutions", body: "Learn from an explanation for each question once you submit." },
 ];
 
 export default function LandingPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-line">
-        <div className="steps-motif pointer-events-none absolute inset-0 opacity-70" aria-hidden />
-        <div className="container-page relative grid gap-12 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:py-24">
+      <section className="border-b border-line bg-surface">
+        <div className="container-page grid gap-12 py-14 md:grid-cols-[1.1fr_0.9fr] md:items-center md:py-20">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-gold-200 bg-gold-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold-700">
-              HAT &amp; USAT preparation
+            <p lang="ur" dir="rtl" className="urdu text-left text-2xl text-forest-700 sm:text-3xl">
+              آپ کا اگلا قدم یہیں سے شروع ہوتا ہے
             </p>
-            <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
-              Your next step
-              <br />
-              <span className="text-forest-700">starts here.</span>
+            <h1 className="mt-4 text-4xl font-extrabold leading-[1.1] sm:text-5xl">
+              Prepare for HAT and USAT with real, timed mock tests.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-              QADAM <span lang="ur" className="font-urdu text-gold-600">قدم</span> is a focused preparation platform for
-              Pakistan&apos;s HAT and USAT. Practise by topic, take full-length timed mocks, and learn from detailed
-              solutions.
+              QADAM gives Pakistani students full-length mocks with the official weightage, subject practice and a
+              worked solution for every question. It is free.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <LinkButton href="/register" size="lg">Create free account</LinkButton>
-              <LinkButton href="/login" size="lg" variant="secondary">I already have an account</LinkButton>
+              <LinkButton href="/login" size="lg" variant="secondary">Log in</LinkButton>
             </div>
             <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
-              {["11 test categories", "Official weightage", "Free to use"].map((t) => (
+              {["11 test categories", "Works on any phone", "Answers saved as you go"].map((t) => (
                 <li key={t} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-success" aria-hidden /> {t}
                 </li>
@@ -66,12 +50,12 @@ export default function LandingPage() {
             </ul>
           </div>
 
-          {/* Product preview (pure markup - no image download) */}
-          <div className="relative hidden md:block" aria-hidden>
+          {/* Product preview (markup only, no image download) */}
+          <div className="hidden md:block" aria-hidden>
             <div className="rounded-xl border border-line bg-surface p-5 shadow-raised">
               <div className="flex items-center justify-between border-b border-line pb-3">
                 <div>
-                  <p className="text-xs font-semibold text-muted">USAT-E · Full Mock</p>
+                  <p className="text-xs font-semibold text-muted">USAT-E full mock</p>
                   <p className="text-sm font-bold text-forest-950">Question 18 of 75</p>
                 </div>
                 <span className="tabular rounded-md bg-forest-900 px-2.5 py-1 text-sm font-bold text-white">72:14</span>
@@ -110,7 +94,7 @@ export default function LandingPage() {
                       i < 17
                         ? "h-5 rounded-sm bg-forest-700"
                         : i === 17
-                          ? "h-5 rounded-sm ring-2 ring-gold-500"
+                          ? "h-5 rounded-sm ring-2 ring-forest-900"
                           : i === 21
                             ? "h-5 rounded-sm bg-gold-500"
                             : "h-5 rounded-sm bg-sage-100"
@@ -119,35 +103,32 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-            <div className="absolute -bottom-6 -left-8 rounded-lg border border-line bg-surface px-4 py-3 shadow-raised">
-              <p className="text-xs font-semibold text-muted">Accuracy</p>
-              <p className="tabular text-xl font-extrabold text-success">86%</p>
-            </div>
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section id="how" className="container-page scroll-mt-20 py-16 md:py-20">
-        <SectionHeading eyebrow="How it works" title="Four steps. No clutter." />
-        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s) => (
-            <li key={s.n} className="rounded-lg border border-line bg-surface p-5 shadow-card">
-              <span className="tabular text-sm font-extrabold text-gold-600">{s.n}</span>
-              <h3 className="mt-2 text-lg font-bold">{s.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted">{s.body}</p>
+      <section id="how" className="container-page scroll-mt-20 py-14 md:py-20">
+        <h2 className="text-3xl font-extrabold">How it works</h2>
+        <ol className="mt-8 grid gap-8 md:grid-cols-3">
+          {steps.map((s, i) => (
+            <li key={s.title} className="border-t-2 border-forest-900 pt-4">
+              <span className="tabular text-sm font-bold text-forest-700">Step {i + 1}</span>
+              <h3 className="mt-1 text-lg font-bold">{s.title}</h3>
+              <p className="mt-1.5 leading-relaxed text-muted">{s.body}</p>
             </li>
           ))}
         </ol>
       </section>
 
       {/* HAT */}
-      <section id="hat" className="scroll-mt-20 border-y border-line bg-surface py-16 md:py-20">
+      <section id="hat" className="scroll-mt-20 border-y border-line bg-surface py-14 md:py-20">
         <div className="container-page">
-          <SectionHeading eyebrow="HAT" title={HAT.name} sub={HAT.summary} />
+          <h2 className="text-3xl font-extrabold">{HAT.name}</h2>
+          <p className="mt-2 max-w-2xl text-ink-soft">{HAT.summary}</p>
           <div className="mt-8 overflow-x-auto rounded-lg border border-line">
             <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="bg-paper text-xs uppercase tracking-wide text-muted">
+              <thead className="bg-paper text-muted">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Category</th>
                   <th className="px-4 py-3 font-semibold">Disciplines</th>
@@ -173,73 +154,54 @@ export default function LandingPage() {
       </section>
 
       {/* USAT */}
-      <section id="usat" className="container-page scroll-mt-20 py-16 md:py-20">
-        <SectionHeading eyebrow="USAT" title={USAT.name} sub={USAT.summary} />
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {USAT.categories.map((c) => (
-            <div key={c.code} className="rounded-lg border border-line bg-surface p-5 shadow-card">
-              <p className="font-extrabold text-forest-900">{c.code}</p>
-              <p className="mt-1 text-sm text-ink-soft">{c.subjects}</p>
-              <div className="mt-4 flex flex-wrap gap-1.5 text-xs">
-                <span className="rounded-full bg-sage-100 px-2 py-0.5 font-semibold text-forest-800">Verbal 20</span>
-                <span className="rounded-full bg-sage-100 px-2 py-0.5 font-semibold text-forest-800">Quantitative 25</span>
-                <span className="rounded-full bg-gold-100 px-2 py-0.5 font-semibold text-gold-700">2 Essays</span>
-              </div>
-            </div>
-          ))}
+      <section id="usat" className="container-page scroll-mt-20 py-14 md:py-20">
+        <h2 className="text-3xl font-extrabold">{USAT.name}</h2>
+        <p className="mt-2 max-w-2xl text-ink-soft">{USAT.summary}</p>
+        <div className="mt-8 overflow-hidden rounded-lg border border-line bg-surface">
+          <ul className="divide-y divide-line">
+            {USAT.categories.map((c) => (
+              <li key={c.code} className="flex flex-col gap-1 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-6">
+                <span className="w-24 shrink-0 font-bold text-forest-900">{c.code}</span>
+                <span className="flex-1 text-sm text-ink-soft">{c.subjects}</span>
+                <span className="text-sm text-muted">Verbal 20, Quantitative 25, 2 essays</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 border-t border-line bg-forest-950 py-16 text-white md:py-20">
+      <section id="features" className="scroll-mt-20 border-t border-line bg-surface py-14 md:py-20">
         <div className="container-page">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold-500">Why QADAM</p>
-          <h2 className="mt-2 max-w-2xl text-3xl font-extrabold text-white sm:text-4xl">
-            Everything you need to prepare. Nothing you don&apos;t.
-          </h2>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="text-3xl font-extrabold">What you get</h2>
+          <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
             {features.map(({ icon: Icon, title, body }) => (
-              <div key={title} className="bg-forest-950 p-6">
-                <Icon className="h-5 w-5 text-gold-500" aria-hidden />
-                <h3 className="mt-3 font-bold text-white">{title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-sage-300">{body}</p>
+              <div key={title} className="flex gap-3">
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-forest-700" aria-hidden />
+                <div>
+                  <h3 className="font-bold">{title}</h3>
+                  <p className="mt-1 leading-relaxed text-muted">{body}</p>
+                </div>
               </div>
             ))}
-          </div>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <LinkButton href="/register" variant="gold" size="lg">Start preparing now</LinkButton>
-            <span className="flex items-center gap-2 text-sm text-sage-300">
-              <ShieldCheck className="h-4 w-4" aria-hidden /> Free · No card required
-            </span>
           </div>
         </div>
       </section>
 
-      <section className="container-page grid gap-6 py-14 sm:grid-cols-3">
-        {[
-          { icon: Layers, k: "5-level structure", v: "Test → Category → Section → Subject → Topic" },
-          { icon: FileText, k: "Admin-verified content", v: "Only verified, published questions reach students" },
-          { icon: Clock3, k: "Autosave", v: "Your answers are kept even if the network drops" },
-        ].map(({ icon: Icon, k, v }) => (
-          <div key={k} className="flex gap-3">
-            <Icon className="mt-0.5 h-5 w-5 shrink-0 text-forest-700" aria-hidden />
-            <div>
-              <p className="font-bold text-forest-950">{k}</p>
-              <p className="text-sm text-muted">{v}</p>
-            </div>
+      {/* Closing call to action */}
+      <section className="bg-forest-900 text-white">
+        <div className="container-page flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p lang="ur" dir="rtl" className="urdu text-left text-2xl text-white sm:text-3xl">
+              محنت کا پھل میٹھا ہوتا ہے
+            </p>
+            <p className="mt-1 text-forest-100">Hard work pays off. Start with one mock today.</p>
           </div>
-        ))}
+          <LinkButton href="/register" size="lg" className="bg-white text-forest-900 hover:bg-forest-50">
+            Create free account
+          </LinkButton>
+        </div>
       </section>
     </>
-  );
-}
-
-function SectionHeading({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
-  return (
-    <div>
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold-600">{eyebrow}</p>
-      <h2 className="mt-2 text-3xl font-extrabold sm:text-4xl">{title}</h2>
-      {sub && <p className="mt-2 text-ink-soft">{sub}</p>}
-    </div>
   );
 }

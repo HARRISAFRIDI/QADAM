@@ -72,7 +72,7 @@ export function QuestionGrid({
         if (!list.length) return null;
         return (
           <div key={s.id} className="mb-4">
-            {sections.length > 1 && <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted">{s.name}</p>}
+            {sections.length > 1 && <p className="mb-2 text-xs font-bold text-muted">{s.name}</p>}
             <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-8 lg:grid-cols-6 xl:grid-cols-7">
               {list.map((i) => (
                 <Cell

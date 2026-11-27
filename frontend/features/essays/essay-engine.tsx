@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Check, CloudOff, Loader2, PenLine } from "lucide-react";
+import { Check, CloudOff, FileCheck2, Loader2, PenLine } from "lucide-react";
 
 import { LogoMark } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,13 @@ interface Draft {
   seq: number;
 }
 
+/** Self-score choices for students who wrote their essays on paper. null = random 70-90%. */
+const SELF_SCORES: { label: string; percent: number | null }[] = [
+  { label: "75%", percent: 75 },
+  { label: "85%", percent: 85 },
+  { label: "Random (70–90%)", percent: null },
+];
+
 const words = (t: string) => (t.trim() ? t.trim().split(/\s+/).length : 0);
 const localKey = (id: string) => `qadam:essays:${id}`;
 
@@ -41,6 +48,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
   const [confirm, setConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selfPick, setSelfPick] = useState<(typeof SELF_SCORES)[number] | null>(null);
   const dirty = useRef<Set<EssayType>>(new Set());
   const draftsRef = useRef(drafts);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -149,6 +157,30 @@ export function EssayEngine({ state }: { state: EssayState }) {
     }
   }, [flush, router, state.attempt_id]);
 
+  const selfScore = useCallback(async () => {
+    if (!selfPick || done.current) return;
+    done.current = true;
+    setSubmitting(true);
+    try {
+      await api(`/attempts/${state.attempt_id}/essays/self-score`, {
+        method: "POST",
+        body: { percent: selfPick.percent },
+      });
+      try {
+        localStorage.removeItem(localKey(state.attempt_id));
+      } catch {
+        /* ignore */
+      }
+      router.replace(`/results/${state.attempt_id}`);
+      router.refresh();
+    } catch (e) {
+      done.current = false;
+      setSubmitting(false);
+      setSelfPick(null);
+      setError(errorMessage(e));
+    }
+  }, [router, selfPick, state.attempt_id]);
+
   const ready = (t: EssayType) => drafts[t]?.topicId && words(drafts[t].content) > 0;
 
   return (
@@ -186,6 +218,27 @@ export function EssayEngine({ state }: { state: EssayState }) {
         )}
         {error && <p className="mb-4 rounded-md bg-danger-soft px-4 py-2.5 text-sm text-danger">{error}</p>}
 
+        {!readOnly && (
+          <section className="mb-5 flex flex-col gap-3 rounded-lg border border-line bg-surface px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex gap-3">
+              <FileCheck2 className="mt-0.5 h-5 w-5 shrink-0 text-forest-700" aria-hidden />
+              <div>
+                <p className="font-bold text-forest-950">Wrote your essays on paper?</p>
+                <p className="text-sm text-muted">
+                  The real test is on paper. Skip typing and give yourself a score out of 25.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SELF_SCORES.map((o) => (
+                <Button key={o.label} variant="secondary" size="sm" onClick={() => setSelfPick(o)}>
+                  {o.label}
+                </Button>
+              ))}
+            </div>
+          </section>
+        )}
+
         <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg border border-line bg-surface p-1" role="tablist">
           {(["argument", "narrative"] as EssayType[]).map((t) => (
             <button
@@ -212,7 +265,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
           if (!d || tab !== t) return null;
           return (
             <section key={t} className="rounded-xl border border-line bg-surface p-5 shadow-card sm:p-6">
-              <p className="text-xs font-bold uppercase tracking-wide text-gold-600">Step 1 · Choose one topic</p>
+              <p className="text-sm font-semibold text-forest-700">Step 1: choose one topic</p>
               <div className="mt-3 grid gap-2">
                 {state.options[t].map((opt, i) => (
                   <label
@@ -226,7 +279,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
                     <input
                       type="radio"
                       name={`topic-${t}`}
-                      className="mt-1 h-4 w-4 accent-[#0f3d2e]"
+                      className="mt-1 h-4 w-4 accent-[#01411c]"
                       checked={d.topicId === opt.id}
                       disabled={readOnly}
                       onChange={() => update(t, { topicId: opt.id })}
@@ -240,7 +293,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
               </div>
 
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-xs font-bold uppercase tracking-wide text-gold-600">Step 2 · Write your essay</p>
+                <p className="text-sm font-semibold text-forest-700">Step 2: write your essay</p>
                 <span className="tabular text-xs font-semibold text-muted">{words(d.content)} words</span>
               </div>
               <p className="mt-1 text-sm text-muted">{META[t].hint}</p>
@@ -283,6 +336,27 @@ export function EssayEngine({ state }: { state: EssayState }) {
           </Button>
           <Button onClick={() => void submit()} loading={submitting}>
             Submit essays
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog
+        open={selfPick !== null}
+        onClose={() => !submitting && setSelfPick(null)}
+        title="Use a self-assessed essay score?"
+      >
+        <p className="text-sm text-ink-soft">
+          {selfPick?.percent
+            ? `Both essays will be marked at ${selfPick.percent}% of their marks (about ${Math.round(25 * selfPick.percent / 100)} out of 25).`
+            : "Both essays will be marked at a random score between 70% and 90% of their marks."}{" "}
+          Anything typed here is not saved, and you cannot change the score afterwards.
+        </p>
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button variant="secondary" onClick={() => setSelfPick(null)} disabled={submitting}>
+            Cancel
+          </Button>
+          <Button onClick={() => void selfScore()} loading={submitting}>
+            Submit with {selfPick?.label ?? ""}
           </Button>
         </div>
       </Dialog>

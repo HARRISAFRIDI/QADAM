@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock3, GraduationCap, History, School } from "lucide-react";
 
-import { PageHeader } from "@/components/shared/page-header";
 import { Badge, Card, CardHeader, EmptyState } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/button";
 import { getMe, pageApi, serverApi } from "@/lib/api/server";
@@ -26,50 +25,58 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Dashboard"
-        title={`Assalam-o-Alaikum, ${firstName}`}
-        description="Choose your test to see only the sections, subjects and mocks that matter for you."
-      />
+      <div className="mb-8">
+        <p lang="ur" dir="rtl" className="urdu text-left text-xl text-forest-700">
+          السلام علیکم، خوش آمدید
+        </p>
+        <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">Welcome back, {firstName}</h1>
+        <p className="mt-1.5 max-w-2xl text-ink-soft">Choose your test to see the mocks and practice for your category.</p>
+      </div>
 
       {(inProgress || preferred) && (
-        <div className="mb-8 grid gap-4 md:grid-cols-2">
+        <div className="mb-8 grid gap-3 md:grid-cols-2">
           {inProgress && (
-            <Card className="border-gold-200 bg-gold-100/60 p-5">
-              <p className="text-xs font-bold uppercase tracking-wide text-gold-700">In progress</p>
-              <p className="mt-1 font-bold text-forest-950">{inProgress.title}</p>
-              <p className="text-sm text-ink-soft">Started {formatDate(inProgress.started_at)}</p>
+            <Card className="flex items-center justify-between gap-4 border-gold-200 bg-gold-100/60 p-5">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gold-700">Not finished yet</p>
+                <p className="mt-0.5 truncate font-bold text-forest-950">{inProgress.title}</p>
+                <p className="text-sm text-ink-soft">Started {formatDate(inProgress.started_at)}</p>
+              </div>
               <LinkButton
                 href={inProgress.status === "in_progress" ? `/attempt/${inProgress.id}` : `/attempt/${inProgress.id}/essays`}
-                className="mt-4"
                 size="sm"
+                className="shrink-0"
               >
-                Resume <ArrowRight className="h-4 w-4" aria-hidden />
+                Resume
               </LinkButton>
             </Card>
           )}
           {preferred && (
-            <Card className="p-5">
-              <p className="text-xs font-bold uppercase tracking-wide text-muted">Continue preparing</p>
-              <p className="mt-1 font-bold text-forest-950">{preferred.name}</p>
-              <p className="text-sm text-ink-soft">
-                {preferred.total_mcqs} MCQs · {preferred.mcq_duration_min} min
-              </p>
+            <Card className="flex items-center justify-between gap-4 p-5">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-muted">
+                  Continue preparing <span lang="ur" className="urdu text-forest-700">· تیاری جاری رکھیں</span>
+                </p>
+                <p className="mt-0.5 truncate font-bold text-forest-950">{preferred.name}</p>
+                <p className="text-sm text-ink-soft">
+                  {preferred.total_mcqs} MCQs in {preferred.mcq_duration_min} minutes
+                </p>
+              </div>
               <LinkButton
                 href={`/prepare/${preferred.exam.toLowerCase()}/${preferred.code.toLowerCase()}`}
-                className="mt-4"
                 size="sm"
                 variant="secondary"
+                className="shrink-0"
               >
-                Open {preferred.code} <ArrowRight className="h-4 w-4" aria-hidden />
+                Open {preferred.code}
               </LinkButton>
             </Card>
           )}
         </div>
       )}
 
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-muted">Step 1 · Choose your test</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+      <h2 className="mb-3 text-lg font-bold">Choose your test</h2>
+      <div className="grid gap-3 md:grid-cols-2">
         {exams.map((exam) => {
           const Icon = exam.code === "HAT" ? GraduationCap : School;
           const first = exam.categories[0];
@@ -77,26 +84,22 @@ export default async function DashboardPage() {
             <Link
               key={exam.id}
               href={`/prepare/${exam.code.toLowerCase()}`}
-              className="group rounded-xl border border-line bg-surface p-6 shadow-card transition-[border-color,box-shadow] hover:border-forest-700 hover:shadow-raised"
+              className="group flex items-center gap-4 rounded-lg border border-line bg-surface p-5 transition-colors hover:border-forest-700"
             >
-              <div className="flex items-start justify-between">
-                <span className="grid h-11 w-11 place-items-center rounded-lg bg-forest-900 text-white">
-                  <Icon className="h-5 w-5" aria-hidden />
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-forest-50 text-forest-900">
+                <Icon className="h-6 w-6" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xl font-extrabold text-forest-950">{exam.code}</span>
+                <span className="block truncate text-sm text-ink-soft">{exam.name}</span>
+                <span className="mt-1 flex items-center gap-1 text-xs text-muted">
+                  <Clock3 className="h-3 w-3" aria-hidden />
+                  {exam.categories.length} categories
+                  {first && `, ${first.total_mcqs} MCQs in ${first.mcq_duration_min} min`}
+                  {first?.essay_duration_min ? " plus 2 essays" : ""}
                 </span>
-                <ArrowRight className="h-5 w-5 text-muted transition-transform group-hover:translate-x-1 group-hover:text-forest-900" aria-hidden />
-              </div>
-              <p className="mt-4 text-2xl font-extrabold text-forest-950">{exam.code}</p>
-              <p className="text-sm font-medium text-ink-soft">{exam.name}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Badge tone="forest">{exam.categories.length} categories</Badge>
-                {first && (
-                  <Badge>
-                    <Clock3 className="h-3 w-3" aria-hidden />
-                    {first.total_mcqs} MCQs · {first.mcq_duration_min} min
-                  </Badge>
-                )}
-                {first?.essay_duration_min && <Badge tone="gold">+ 2 essays</Badge>}
-              </div>
+              </span>
+              <ArrowRight className="h-5 w-5 shrink-0 text-muted group-hover:text-forest-900" aria-hidden />
             </Link>
           );
         })}
@@ -104,7 +107,7 @@ export default async function DashboardPage() {
 
       <Card className="mt-10">
         <CardHeader
-          title="Recent activity"
+          title="Recent attempts"
           action={
             history.total > 0 ? (
               <Link href="/history" className="text-sm font-semibold text-forest-700 hover:underline">
@@ -116,8 +119,13 @@ export default async function DashboardPage() {
         {history.items.length === 0 ? (
           <EmptyState
             icon={<History className="h-5 w-5" />}
-            title="No attempts yet"
-            description="Pick HAT or USAT above and start your first practice session."
+            title="Take your first step"
+            description={
+              <>
+                <span lang="ur" dir="rtl" className="urdu block text-base text-forest-700">پہلا قدم اٹھائیں</span>
+                Choose HAT or USAT above and start a practice session or a full mock.
+              </>
+            }
           />
         ) : (
           <ul className="divide-y divide-line">
@@ -130,7 +138,7 @@ export default async function DashboardPage() {
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-forest-950">{h.title}</p>
                     <p className="text-xs text-muted">
-                      {MODE_LABEL[h.mode]} · {formatDate(h.started_at)}
+                      {MODE_LABEL[h.mode]}, {formatDate(h.started_at)}
                     </p>
                   </div>
                   {h.status === "in_progress" ? (

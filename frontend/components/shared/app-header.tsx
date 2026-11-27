@@ -34,7 +34,7 @@ export function AppHeader({ me, admin = false }: { me: Me; admin?: boolean }) {
       <div className="container-page flex h-14 items-center gap-4">
         <Logo href={admin ? "/admin" : "/dashboard"} />
         {admin && (
-          <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-gold-700">
+          <span className="rounded-full bg-forest-50 px-2 py-0.5 text-xs font-semibold text-forest-800">
             Admin
           </span>
         )}
