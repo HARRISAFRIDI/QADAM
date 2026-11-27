@@ -1,5 +1,6 @@
 import { Breadcrumbs, PageHeader } from "@/components/shared/page-header";
 import { Alert } from "@/components/ui/card";
+import { QuestionActions } from "@/features/admin/question-actions";
 import { QuestionEditor } from "@/features/admin/question-editor";
 import type { AdminQuestion, Taxonomy } from "@/features/admin/types";
 import { pageApi } from "@/lib/api/server";
@@ -19,7 +20,11 @@ export default async function EditQuestionPage({
   return (
     <>
       <Breadcrumbs items={[{ href: "/admin/questions", label: "Questions" }, { label: `#${question.id}` }]} />
-      <PageHeader title={`Question #${question.id}`} description={question.import_batch ? `Imported in batch ${question.import_batch}` : undefined} />
+      <PageHeader
+        title={`Question #${question.id}`}
+        description={question.import_batch ? `Imported in batch ${question.import_batch}` : undefined}
+        action={<QuestionActions id={question.id} status={question.status} showEdit={false} afterDelete="/admin/questions" />}
+      />
       {sp.created && <Alert tone="success" className="mb-4">Question created.</Alert>}
       <QuestionEditor key={question.updated_at} taxonomy={taxonomy} question={question} />
     </>

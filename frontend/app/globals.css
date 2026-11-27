@@ -3,7 +3,10 @@
 /* ---------- QADAM design tokens ---------- */
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --font-urdu: var(--font-nastaliq), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
+  /* Device fonts only (used by the logo on every page: no download). */
+  --font-urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
+  /* Web font for the few Urdu phrases (landing page, dashboard). */
+  --font-urdu-web: var(--font-nastaliq), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
 
   /* Primary: Pakistan flag green, deepened for text and buttons. */
   --color-forest-950: #012a15;
@@ -108,7 +111,7 @@
 
 /* Urdu Nastaliq needs taller lines than Latin text. */
 @utility urdu {
-  font-family: var(--font-urdu);
+  font-family: var(--font-urdu-web);
   line-height: 2;
   font-weight: 400;
   letter-spacing: 0;

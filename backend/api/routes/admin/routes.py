@@ -126,6 +126,11 @@ async def update_question(qid: int, data: QuestionPatch, admin: AdminUser, db: D
     return await question_service.update_question(db, admin, qid, data)
 
 
+@router.delete("/questions/{qid}")
+async def delete_question(qid: int, admin: AdminUser, db: DB) -> dict:
+    return await question_service.delete_question(db, admin, qid)
+
+
 @router.post("/questions/bulk-status")
 async def bulk_status(data: BulkStatusIn, admin: AdminUser, db: DB) -> dict:
     return {"updated": await question_service.bulk_status(db, admin, data)}

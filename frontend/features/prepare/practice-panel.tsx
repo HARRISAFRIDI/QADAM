@@ -18,6 +18,7 @@ export function PracticePanel({ category, sections }: { category: string; sectio
   const [timed, setTimed] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const multiSubject = sections.filter((s) => s.subjects.length > 1);
 
   async function start(mode: "subject" | "section", refId: number, key: string) {
     setBusy(key);
@@ -97,12 +98,15 @@ export function PracticePanel({ category, sections }: { category: string; sectio
         })}
       </div>
 
-      {/* Subject-wise (topic-wise practice removed: too few questions per topic) */}
+      {/* Subject-wise: only sections with several subjects. A one-subject section
+          (e.g. English / Verbal) is already covered by section-wise practice. */}
+      {multiSubject.length > 0 && (
+      <>
       <h3 className="mb-3 mt-8 flex items-center gap-2 text-sm font-bold text-ink-soft">
         <BookOpen className="h-4 w-4" aria-hidden /> Subject-wise practice
       </h3>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {sections.flatMap((s) =>
+        {multiSubject.flatMap((s) =>
           s.subjects.map((sub) => {
             const key = `subject-${sub.id}`;
             return (
@@ -125,6 +129,8 @@ export function PracticePanel({ category, sections }: { category: string; sectio
           }),
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }

@@ -10,11 +10,14 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
-// Urdu phrases on the landing page and dashboard.
+// Urdu phrases on the landing page and dashboard only. Not preloaded: the file is
+// large, and the browser fetches it only on pages that actually render Urdu text
+// (the `urdu` utility). One weight, because only 400 is used.
 const nastaliq = Noto_Nastaliq_Urdu({
   subsets: ["arabic"],
-  weight: ["400", "700"],
+  weight: "400",
   display: "swap",
+  preload: false,
   variable: "--font-nastaliq",
 });
 

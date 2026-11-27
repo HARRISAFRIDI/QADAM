@@ -7,6 +7,7 @@ import { Badge, Card, EmptyState } from "@/components/ui/card";
 import { LinkButton, buttonClass } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/form";
 import { ActionButton } from "@/features/admin/action-button";
+import { QuestionActions } from "@/features/admin/question-actions";
 import type { QuestionRow, Taxonomy } from "@/features/admin/types";
 import { pageApi } from "@/lib/api/server";
 import type { Page } from "@/lib/api/types";
@@ -109,8 +110,8 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] text-sm">
-              <thead className="border-b border-line bg-paper text-left text-xs uppercase tracking-wide text-muted">
+            <table className="w-full min-w-[1080px] text-sm">
+              <thead className="border-b border-line bg-paper text-left text-xs text-muted">
                 <tr>
                   <th className="px-4 py-3 font-semibold">ID</th>
                   <th className="px-4 py-3 font-semibold">Question</th>
@@ -118,6 +119,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
                   <th className="px-4 py-3 text-center font-semibold">Ans</th>
                   <th className="px-4 py-3 font-semibold">Status</th>
                   <th className="px-4 py-3 font-semibold">Updated</th>
+                  <th className="px-4 py-3 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -138,6 +140,9 @@ export default async function QuestionsPage({ searchParams }: { searchParams: Pr
                       <Badge tone={statusTone[q.status as keyof typeof statusTone] ?? "neutral"}>{q.status}</Badge>
                     </td>
                     <td className="px-4 py-3 text-xs text-muted">{formatDate(q.updated_at)}</td>
+                    <td className="px-4 py-3 text-right">
+                      <QuestionActions id={q.id} status={q.status} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

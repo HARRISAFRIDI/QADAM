@@ -3,11 +3,11 @@
 QADAM is a free website where Pakistani students prepare for the **HAT** and **USAT** entry tests. A student picks a test and a category, then:
 
 - takes a **full mock test** with the real timer and the official number of questions from each subject,
-- practises **one subject** or **one section** at a time (there is no topic-wise practice, because each topic has only a few questions),
+- practises **one section** at a time, or **one subject** inside a section that has several subjects, such as Physics in "Category Subjects" (there is no topic-wise practice, because each topic has only a few questions),
 - writes the two **USAT essays**, either by typing them or by writing on paper and giving themselves a score (75%, 85% or a random 70–90%),
 - sees a **result** with the score by section and subject, the correct answers and a solution for each question.
 
-Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text files), build fixed mock papers, grade typed essays and manage students.
+Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text files), and can **edit, publish/unpublish or delete** any question from the question list. Deleting a question that students have already used archives it instead, so old results stay correct. Admins also build fixed mock papers, grade typed essays and manage students.
 
 ---
 
@@ -19,7 +19,7 @@ Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text 
 | Language | **TypeScript** | JavaScript that checks types, so fewer bugs slip through. |
 | Styling | **Tailwind CSS 4** | Styles are written as short class names. All colours live in one file: `frontend/app/globals.css`. |
 | Icons | **Lucide** | Simple line icons. |
-| Fonts | **Plus Jakarta Sans** for English, **Noto Nastaliq Urdu** for Urdu | Both are loaded by Next.js itself, so there is no extra request to Google. |
+| Fonts | **Plus Jakarta Sans** for English, **Noto Nastaliq Urdu** for Urdu | Both are served by Next.js itself, not by Google. The Urdu font is large (about 160 KB), so it is not preloaded and only downloads on pages that show Urdu. |
 
 **Design.** The look is clean and plain, so students don't have to work out how to use it.
 

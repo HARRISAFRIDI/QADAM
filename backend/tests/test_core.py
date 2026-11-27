@@ -268,3 +268,24 @@ async def test_curated_mock(admin, student, question_bank):
     assert ov["mocks"][0]["id"] == mid
     r = await student.post("/attempts", json={"category": "HAT-I", "mock_test_id": mid})
     assert r.status_code == 201
+
+
+async def test_admin_delete_question(admin):
+    tax = (await admin.get("/admin/taxonomy")).json()
+    body = {
+        "exam_id": tax["exams"][0]["id"],
+        "subject_id": tax["subjects"][0]["id"],
+        "stem": "Temporary question?",
+        "option_a": "1",
+        "option_b": "2",
+        "option_c": "3",
+        "option_d": "4",
+        "correct_option": "A",
+    }
+    qid = (await admin.post("/admin/questions", json=body)).json()["id"]
+    r = await admin.patch(f"/admin/questions/{qid}", json={"status": "published"})
+    assert r.json()["status"] == "published"
+    r = await admin.patch(f"/admin/questions/{qid}", json={"status": "draft"})  # unpublish
+    assert r.json()["status"] == "draft"
+    assert (await admin.delete(f"/admin/questions/{qid}")).json() == {"deleted": True, "archived": False}
+    assert (await admin.get(f"/admin/questions/{qid}")).status_code == 404

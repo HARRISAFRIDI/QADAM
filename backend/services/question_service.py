@@ -1,10 +1,10 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import func, or_, select, update
+from sqlalchemy import delete, exists, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.errors import bad_request, not_found
-from models import Question, User
+from models import AttemptQuestion, Bookmark, MockTestQuestion, Question, User
 from schemas.admin import BulkStatusIn, QuestionIn, QuestionPatch
 from services.audit import audit
 from services.taxonomy import get_taxonomy
@@ -132,6 +132,31 @@ async def update_question(
     await db.commit()
     await db.refresh(q)
     return q
+
+
+async def delete_question(db: AsyncSession, admin: User, question_id: int) -> dict:
+    """Hard-delete an unused question; archive one that attempts or mock papers use.
+
+    Past results keep pointing at used questions, so those cannot be removed.
+    Archived questions are hidden from students and from the default admin list.
+    """
+    q = await get_question(db, question_id)
+    used = await db.scalar(
+        select(
+            exists().where(AttemptQuestion.question_id == q.id)
+            | exists().where(MockTestQuestion.question_id == q.id)
+        )
+    )
+    if used:
+        q.status = "archived"
+        audit(db, admin, "question.archive", "question", q.id)
+        await db.commit()
+        return {"deleted": False, "archived": True}
+    await db.execute(delete(Bookmark).where(Bookmark.question_id == q.id))
+    await db.delete(q)
+    audit(db, admin, "question.delete", "question", question_id)
+    await db.commit()
+    return {"deleted": True, "archived": False}
 
 
 async def bulk_status(db: AsyncSession, admin: User, data: BulkStatusIn) -> int:
