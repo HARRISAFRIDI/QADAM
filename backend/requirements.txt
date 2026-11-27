@@ -9,3 +9,4 @@ pyjwt==2.15.1
 bcrypt==5.0.0
 httpx==0.29.0
 openpyxl==3.1.5
+pypdf==6.21.4

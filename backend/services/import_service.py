@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.errors import bad_request
 from models import Question, Topic, User
+from services import document_parser
 from services import taxonomy as taxonomy_cache
 from services.audit import audit
 from services.taxonomy import Taxonomy, get_taxonomy
@@ -155,14 +156,40 @@ async def run_import(
     dry_run: bool,
     create_topics: bool,
     skip_invalid: bool,
+    default_subject: str | None = None,
+    default_topic: str | None = None,
+    answer_filename: str | None = None,
+    answer_data: bytes | None = None,
 ) -> dict:
     name = filename.lower()
+    warnings: list[str] = []
+    is_document = name.endswith(document_parser.DOC_EXTENSIONS)
     if name.endswith(".csv"):
         rows = _rows_from_csv(data)
     elif name.endswith(".xlsx"):
         rows = _rows_from_xlsx(data)
+    elif is_document:
+        questions, warnings = document_parser.parse_mcqs(document_parser.extract_text(filename, data))
+        if answer_data and answer_filename:
+            key = document_parser.answer_key_from_text(
+                document_parser.extract_text(answer_filename, answer_data)
+            )
+            filled = 0
+            for q in questions:
+                if q["number"] in key and not q["answer"]:
+                    q["answer"] = key[q["number"]]
+                    filled += 1
+            warnings.append(f"Answer sheet: {len(key)} answers read, {filled} applied.")
+        if not questions:
+            raise bad_request(
+                "No questions were found. Number each question (1. 2. ...) and label options A) B) C) D).",
+                "no_questions_found",
+            )
+        rows = document_parser.to_import_rows(questions, default_exam, default_subject, default_topic)
+        if len(rows) > MAX_ROWS:
+            raise bad_request(f"Too many questions ({len(rows)}). The limit is {MAX_ROWS} per file.")
     else:
-        raise bad_request("Upload a .csv or .xlsx file.")
+        raise bad_request("Upload a .csv, .xlsx, .pdf, .docx, .doc or .txt file.")
 
     t = await get_taxonomy(db)
     topic_index = {(tp["subject_id"], _key(tp["name"])): tp["id"] for tp in t.topics.values()}
@@ -171,6 +198,8 @@ async def run_import(
     valid: list[dict] = []
 
     for n, r in enumerate(rows, start=2):  # row 1 is the header
+        if is_document:
+            n = r.get("_number", n)
         problems = []
         exam_code = (r.get("exam") or default_exam or "").upper()
         exam = t.exam_by_code.get(exam_code)
@@ -184,7 +213,11 @@ async def run_import(
                 problems.append(f"{f.replace('_', ' ')} is empty")
         correct = _parse_correct(r.get("correct", ""))
         if correct not in ("A", "B", "C", "D"):
-            problems.append("correct must be A, B, C or D")
+            problems.append(
+                "no correct answer found (add 'Answer: B' or an answer key)"
+                if is_document
+                else "correct must be A, B, C or D"
+            )
         difficulty = (r.get("difficulty") or "medium").lower()
         if difficulty not in ("easy", "medium", "hard"):
             problems.append("difficulty must be easy, medium or hard")
@@ -207,7 +240,8 @@ async def run_import(
                     problems.append(f"unknown topic '{topic_name}'")
 
         if problems:
-            errors.append({"row": n, "message": "; ".join(problems)})
+            label = f"Q{n}" if is_document else n
+            errors.append({"row": label, "message": "; ".join(problems)})
             continue
         valid.append(
             {
@@ -236,6 +270,17 @@ async def run_import(
         "invalid": len(errors),
         "errors": errors[:200],
         "new_topics": sorted({v for v in new_topics.values()}),
+        "warnings": warnings,
+        "kind": "document" if is_document else "sheet",
+        "preview": [
+            {
+                "stem": v["stem"][:300],
+                "options": {k: v[f"option_{k.lower()}"][:160] for k in "ABCD"},
+                "correct": v["correct_option"],
+                "explanation": (v["explanation"] or "")[:200] or None,
+            }
+            for v in valid[:5]
+        ],
         "batch": None,
         "inserted": 0,
     }

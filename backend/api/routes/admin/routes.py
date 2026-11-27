@@ -136,20 +136,28 @@ async def import_questions(
     admin: AdminUser,
     db: DB,
     file: UploadFile = File(...),
+    answer_file: UploadFile | None = File(None),
     exam: str | None = Form(None),
+    subject: str | None = Form(None, max_length=120),
+    topic: str | None = Form(None, max_length=120),
     dry_run: bool = Form(True),
     create_topics: bool = Form(True),
     skip_invalid: bool = Form(False),
 ) -> dict:
     data = await file.read(MAX_IMPORT_BYTES + 1)
-    if len(data) > MAX_IMPORT_BYTES:
-        raise bad_request("File is larger than 4 MB. Split it into smaller files.")
+    answer_data = await answer_file.read(MAX_IMPORT_BYTES + 1) if answer_file else None
+    if len(data) + len(answer_data or b"") > MAX_IMPORT_BYTES:
+        raise bad_request("Files are larger than 4 MB in total. Split them into smaller files.")
     return await import_service.run_import(
         db,
         admin,
         filename=file.filename or "upload.csv",
         data=data,
         default_exam=exam,
+        default_subject=subject or None,
+        default_topic=topic or None,
+        answer_filename=answer_file.filename if answer_file else None,
+        answer_data=answer_data,
         dry_run=dry_run,
         create_topics=create_topics,
         skip_invalid=skip_invalid,
