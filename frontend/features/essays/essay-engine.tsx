@@ -185,7 +185,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
 
   return (
     <div className="min-h-dvh bg-paper">
-      <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-line bg-surface">
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
           <LogoMark className="hidden h-7 w-7 sm:block" />
           <div className="min-w-0 flex-1">
@@ -279,7 +279,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
                     <input
                       type="radio"
                       name={`topic-${t}`}
-                      className="mt-1 h-4 w-4 accent-[#01411c]"
+                      className="mt-1 h-4 w-4 accent-[#0b6b3a]"
                       checked={d.topicId === opt.id}
                       disabled={readOnly}
                       onChange={() => update(t, { topicId: opt.id })}

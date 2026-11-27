@@ -38,7 +38,7 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       className={cn(
-        "m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border border-line bg-surface p-0 text-ink shadow-raised backdrop:bg-forest-950/50",
+        "m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border border-line bg-surface p-0 text-ink shadow-raised backdrop:bg-ink/40",
         sheet && "mb-0 w-full max-w-none rounded-b-none sm:mb-auto sm:w-[calc(100%-2rem)] sm:max-w-lg sm:rounded-xl",
         className,
       )}

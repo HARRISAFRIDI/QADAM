@@ -30,7 +30,7 @@ export function AppHeader({ me, admin = false }: { me: Me; admin?: boolean }) {
     .toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-line bg-surface">
       <div className="container-page flex h-14 items-center gap-4">
         <Logo href={admin ? "/admin" : "/dashboard"} />
         {admin && (

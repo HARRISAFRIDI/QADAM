@@ -61,26 +61,25 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-bold text-muted">Choose how to prepare</h2>
         <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-          <Card className="border-forest-900 bg-forest-900 p-6 text-white">
-            <p className="flex items-center gap-2 text-sm font-semibold text-forest-100">
+          <Card className="border-forest-100 bg-forest-50 p-6">
+            <p className="flex items-center gap-2 text-sm font-semibold text-forest-700">
               <Timer className="h-4 w-4" aria-hidden /> Full mock test
             </p>
-            <h3 className="mt-2 text-2xl font-extrabold text-white">Real exam conditions</h3>
-            <p className="mt-1.5 max-w-lg text-sm text-forest-100">
+            <h3 className="mt-2 text-2xl font-extrabold text-forest-950">Real exam conditions</h3>
+            <p className="mt-1.5 max-w-lg text-sm text-ink-soft">
               {ov.total_mcqs} MCQs in {c.mcq_duration_min} minutes with the official {c.code} weightage
               {ov.essays ? `, then two essays in ${ov.essays.duration_min} minutes (type them, or write on paper and self-score)` : ""}.
               Refreshing the page will not stop the timer or lose your answers.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <AvailabilityBadge available={ov.total_available} required={ov.total_mcqs} />
-              <Badge className="border-white/20 bg-white/10 text-white">
+              <Badge>
                 <Clock3 className="h-3 w-3" aria-hidden /> {c.mcq_duration_min} min
               </Badge>
             </div>
             <StartButton
               endpoint="/attempts"
               body={{ category: c.code }}
-              variant="gold"
               size="lg"
               className="mt-6"
               disabled={ov.total_available === 0}

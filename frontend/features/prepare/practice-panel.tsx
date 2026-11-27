@@ -64,7 +64,7 @@ export function PracticePanel({ category, sections }: { category: string; sectio
             type="checkbox"
             checked={timed}
             onChange={(e) => setTimed(e.target.checked)}
-            className="h-4 w-4 accent-[#01411c]"
+            className="h-4 w-4 accent-[#0b6b3a]"
           />
           Timed (72 sec per question)
         </label>

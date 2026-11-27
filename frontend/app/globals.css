@@ -9,9 +9,9 @@
   --font-urdu-web: var(--font-nastaliq), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
 
   /* Primary: Pakistan flag green, deepened for text and buttons. */
-  --color-forest-950: #012a15;
-  --color-forest-900: #01411c;
-  --color-forest-800: #0a5230;
+  --color-forest-950: #0a3d22;
+  --color-forest-900: #0b6b3a;
+  --color-forest-800: #085a31;
   --color-forest-700: #11683e;
   --color-forest-600: #1a7d4c;
   --color-forest-100: #d7ebdf;

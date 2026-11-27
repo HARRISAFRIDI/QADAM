@@ -282,7 +282,7 @@ export function ExamEngine({ attempt }: { attempt: Attempt }) {
   return (
     <div className="min-h-dvh bg-paper pb-24 lg:pb-0">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-line bg-surface">
         <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-4">
           <LogoMark className="hidden h-7 w-7 sm:block" />
           <div className="min-w-0 flex-1">
@@ -379,7 +379,7 @@ export function ExamEngine({ attempt }: { attempt: Attempt }) {
       </div>
 
       {/* Mobile bottom bar */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 px-3 py-2.5 backdrop-blur lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface px-3 py-2.5 lg:hidden">
         <div className="mx-auto flex max-w-xl items-center gap-2">
           <Button variant="secondary" size="lg" className="px-3" onClick={() => go(state.current - 1)} disabled={state.current === 1} aria-label="Previous question">
             <ChevronLeft className="h-5 w-5" />
@@ -430,7 +430,7 @@ export function ExamEngine({ attempt }: { attempt: Attempt }) {
       </Dialog>
 
       {submitting && !confirmOpen && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-forest-950/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/40">
           <div className="flex items-center gap-3 rounded-lg bg-surface px-5 py-4 shadow-raised">
             <Loader2 className="h-5 w-5 animate-spin text-forest-900" />
             <span className="font-semibold">Submitting your answers…</span>

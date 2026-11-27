@@ -189,15 +189,15 @@ export default function LandingPage() {
       </section>
 
       {/* Closing call to action */}
-      <section className="bg-forest-900 text-white">
+      <section className="border-y border-gold-200 bg-gold-100">
         <div className="container-page flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between">
           <div>
-            <p lang="ur" dir="rtl" className="urdu text-left text-2xl text-white sm:text-3xl">
+            <p lang="ur" dir="rtl" className="urdu text-left text-2xl text-forest-950 sm:text-3xl">
               محنت کا پھل میٹھا ہوتا ہے
             </p>
-            <p className="mt-1 text-forest-100">Hard work pays off. Start with one mock today.</p>
+            <p className="mt-1 text-ink-soft">Hard work pays off. Start with one mock today.</p>
           </div>
-          <LinkButton href="/register" size="lg" className="bg-white text-forest-900 hover:bg-forest-50">
+          <LinkButton href="/register" size="lg">
             Create free account
           </LinkButton>
         </div>
