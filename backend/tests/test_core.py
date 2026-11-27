@@ -289,3 +289,11 @@ async def test_admin_delete_question(admin):
     assert r.json()["status"] == "draft"
     assert (await admin.delete(f"/admin/questions/{qid}")).json() == {"deleted": True, "archived": False}
     assert (await admin.get(f"/admin/questions/{qid}")).status_code == 404
+
+
+async def test_only_super_admin_changes_roles(admin, student):
+    """A normal admin (not in SUPER_ADMIN_EMAILS) cannot make or remove admins."""
+    sid = (await student.get("/me")).json()["id"]
+    r = await admin.patch(f"/admin/students/{sid}", json={"role": "admin"})
+    assert r.status_code == 403
+    assert (await admin.get("/me")).json()["is_super_admin"] is False

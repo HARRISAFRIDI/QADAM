@@ -7,7 +7,8 @@ from sqlalchemy import delete, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.errors import bad_request, conflict, not_found
+from core.config import get_settings
+from core.errors import bad_request, conflict, forbidden, not_found
 from models import (
     Attempt,
     Blueprint,
@@ -395,7 +396,13 @@ async def list_students(db: AsyncSession, q: str | None, page: int, page_size: i
         )
     ).all()
     return {
-        "items": [{k: v for k, v in r._asdict().items() if k != "total"} for r in rows],
+        "items": [
+            {
+                **{k: v for k, v in r._asdict().items() if k != "total"},
+                "is_super_admin": get_settings().is_super_admin(r.role, r.email),
+            }
+            for r in rows
+        ],
         "total": rows[0].total if rows else 0,
         "page": page,
         "page_size": page_size,
@@ -409,6 +416,11 @@ async def patch_student(db: AsyncSession, admin: User, uid: uuid.UUID, data: Stu
     if user.id == admin.id:
         raise bad_request("You cannot change your own account here.")
     changes = data.model_dump(exclude_unset=True)
+    settings = get_settings()
+    if settings.is_super_admin(user.role, user.email):
+        raise forbidden("The super admin account cannot be changed.")
+    if "role" in changes and not settings.is_super_admin(admin.role, admin.email):
+        raise forbidden("Only the super admin can make or remove admins.")
     for k, v in changes.items():
         setattr(user, k, v)
     user.token_version += 1  # force re-login with new permissions

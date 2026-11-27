@@ -19,6 +19,7 @@ interface Student {
   created_at: string;
   last_login_at: string | null;
   attempts: number;
+  is_super_admin: boolean;
 }
 
 export default async function StudentsPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
@@ -54,7 +55,11 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
                   <tr key={s.id}>
                     <td className="px-4 py-3">
                       <p className="font-semibold text-forest-950">{s.full_name}</p>
-                      {s.role === "admin" && <Badge tone="gold">admin</Badge>}
+                      {s.is_super_admin ? (
+                        <Badge tone="success">super admin</Badge>
+                      ) : (
+                        s.role === "admin" && <Badge tone="gold">admin</Badge>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-ink-soft">
                       {s.email}
@@ -65,6 +70,8 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
                     <td className="px-4 py-3">
                       {s.id === me?.id ? (
                         <span className="text-xs text-muted">You</span>
+                      ) : s.is_super_admin ? (
+                        <span className="text-xs text-muted">Super admin</span>
                       ) : (
                         <div className="flex flex-wrap gap-1">
                           <ActionButton
@@ -76,6 +83,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
                           >
                             {s.is_active ? "Disable" : "Enable"}
                           </ActionButton>
+                          {me?.is_super_admin && (
                           <ActionButton
                             path={`/admin/students/${s.id}`}
                             method="PATCH"
@@ -89,6 +97,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
                           >
                             {s.role === "admin" ? "Remove admin" : "Make admin"}
                           </ActionButton>
+                          )}
                         </div>
                       )}
                     </td>

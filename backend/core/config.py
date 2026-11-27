@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     access_token_ttl_minutes: int = 60 * 24 * 7
     cookie_name: str = "qadam_session"
     cookie_secure: bool | None = None  # default: True outside development/test
+    # Comma-separated emails. Only these admins can make or remove other admins.
+    super_admin_emails: str = ""
 
     # --- http ---
     cors_allowed_origins: str = ""  # comma separated; empty when frontend proxies same-origin
@@ -42,6 +44,13 @@ class Settings(BaseSettings):
     @classmethod
     def _strip(cls, v: str | None) -> str | None:
         return v.strip() if isinstance(v, str) else v
+
+    @property
+    def super_admins(self) -> set[str]:
+        return {e.strip().lower() for e in self.super_admin_emails.split(",") if e.strip()}
+
+    def is_super_admin(self, role: str, email: str) -> bool:
+        return role == "admin" and email.lower() in self.super_admins
 
     @property
     def is_production(self) -> bool:

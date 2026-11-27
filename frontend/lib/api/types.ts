@@ -12,6 +12,7 @@ export interface Me {
   role: "student" | "admin";
   preferred_category: string | null;
   created_at: string;
+  is_super_admin: boolean;
 }
 
 export interface SectionSummary {

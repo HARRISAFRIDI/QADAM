@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, computed_field, field_validator
 
+from core.config import get_settings
 from schemas.common import ORM
 
 
@@ -46,6 +47,11 @@ class MeOut(ORM):
     role: str
     preferred_category: str | None = None
     created_at: datetime
+
+    @computed_field
+    @property
+    def is_super_admin(self) -> bool:
+        return get_settings().is_super_admin(self.role, self.email)
 
 
 class AuthOut(BaseModel):
