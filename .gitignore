@@ -29,3 +29,8 @@ Thumbs.db
 # local tooling
 .agents/
 skills-lock.json
+
+# local-only planning docs
+/README.md
+/PLAN.md
+/MASTER_PROMPT.md
