@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function Card({ className, ...props }: ComponentProps<"div">) {
-  return <div className={cn("rounded-lg border border-line bg-surface shadow-card", className)} {...props} />;
+  return <div className={cn("rounded-xl border border-line bg-surface shadow-card", className)} {...props} />;
 }
 
 export function CardHeader({
@@ -112,7 +112,7 @@ export function StatTile({
 }) {
   const color = { neutral: "text-forest-950", success: "text-success", danger: "text-danger", gold: "text-gold-700" }[tone];
   return (
-    <div className="rounded-lg border border-line bg-surface px-4 py-3.5 shadow-card">
+    <div className="rounded-xl border border-line bg-surface px-4 py-3.5 shadow-card">
       <p className="text-xs font-semibold text-muted">{label}</p>
       <p className={cn("tabular mt-1 text-2xl font-bold", color)}>{value}</p>
       {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}

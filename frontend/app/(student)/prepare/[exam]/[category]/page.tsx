@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Clock3, FileText, PenLine, Timer } from "lucide-react";
+import { Clock3, FileText, Layers, PenLine, Timer } from "lucide-react";
 
 import { Breadcrumbs, PageHeader } from "@/components/shared/page-header";
 import { Badge, Card } from "@/components/ui/card";
@@ -44,15 +44,24 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
       {/* Exam structure strip */}
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {ov.sections.map((s) => (
-          <div key={s.id} className="rounded-lg border border-line bg-surface px-4 py-3 shadow-card">
-            <p className="truncate text-xs font-semibold text-muted">{s.name}</p>
-            <p className="tabular text-xl font-extrabold text-forest-950">{s.mcq_count}</p>
+          <div key={s.id} className="rounded-2xl border border-line bg-surface px-4 py-3.5 shadow-card">
+            <p className="flex items-center gap-1.5 truncate text-xs font-semibold text-muted">
+              <Layers className="h-3.5 w-3.5 text-forest-600" aria-hidden /> {s.name}
+            </p>
+            <p className="tabular mt-1 text-2xl font-extrabold text-forest-950">
+              {s.mcq_count}
+              <span className="ml-1 text-sm font-semibold text-muted">MCQs</span>
+            </p>
           </div>
         ))}
         {ov.essays && (
-          <div className="rounded-lg border border-gold-200 bg-gold-100/60 px-4 py-3">
-            <p className="text-xs font-semibold text-gold-700">Essays</p>
-            <p className="text-xl font-extrabold text-forest-950">2 · 25 marks</p>
+          <div className="rounded-2xl border border-gold-200 bg-gold-100 px-4 py-3.5">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-gold-700">
+              <PenLine className="h-3.5 w-3.5" aria-hidden /> Essays
+            </p>
+            <p className="tabular mt-1 text-2xl font-extrabold text-forest-950">
+              2<span className="ml-1 text-sm font-semibold text-muted">25 marks</span>
+            </p>
           </div>
         )}
       </div>
@@ -61,7 +70,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-bold text-muted">Choose how to prepare</h2>
         <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-          <Card className="border-forest-100 bg-forest-50 p-6">
+          <Card className="rounded-2xl border-forest-100 bg-forest-50 p-6 shadow-card">
             <p className="flex items-center gap-2 text-sm font-semibold text-forest-700">
               <Timer className="h-4 w-4" aria-hidden /> Full mock test
             </p>

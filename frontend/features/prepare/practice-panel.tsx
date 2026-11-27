@@ -75,25 +75,21 @@ export function PracticePanel({ category, sections }: { category: string; sectio
       <h3 className="mb-3 mt-8 flex items-center gap-2 text-sm font-bold text-ink-soft">
         <Layers className="h-4 w-4" aria-hidden /> Section-wise practice
       </h3>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {sections.map((s) => {
           const key = `section-${s.id}`;
           return (
-            <button
+            <PracticeCard
               key={s.id}
-              type="button"
+              icon={<Layers className="h-5 w-5" aria-hidden />}
+              title={s.name}
+              sub={`${s.mcq_count} MCQs in the exam`}
+              available={s.available}
+              needed={s.mcq_count}
+              busy={busy === key}
               disabled={!s.available || busy !== null}
               onClick={() => start("section", s.id, key)}
-              className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 text-left transition-colors hover:border-forest-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <span className="min-w-0">
-                <span className="block font-bold text-forest-950">{s.name}</span>
-                <span className="text-xs text-muted">
-                  {s.mcq_count} in the exam, {s.available} available
-                </span>
-              </span>
-              {busy === key ? <Spinner className="text-forest-900" /> : <Play className="h-4 w-4 text-forest-700" aria-hidden />}
-            </button>
+            />
           );
         })}
       </div>
@@ -105,26 +101,22 @@ export function PracticePanel({ category, sections }: { category: string; sectio
       <h3 className="mb-3 mt-8 flex items-center gap-2 text-sm font-bold text-ink-soft">
         <BookOpen className="h-4 w-4" aria-hidden /> Subject-wise practice
       </h3>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {multiSubject.flatMap((s) =>
           s.subjects.map((sub) => {
             const key = `subject-${sub.id}`;
             return (
-              <button
+              <PracticeCard
                 key={sub.id}
-                type="button"
+                icon={<BookOpen className="h-5 w-5" aria-hidden />}
+                title={sub.name}
+                sub={`${s.name}, ${sub.mcq_count} in the exam`}
+                available={sub.available}
+                needed={sub.mcq_count}
+                busy={busy === key}
                 disabled={!sub.available || busy !== null}
                 onClick={() => start("subject", sub.id, key)}
-                className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 text-left transition-colors hover:border-forest-700 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <span className="min-w-0">
-                  <span className="block font-bold text-forest-950">{sub.name}</span>
-                  <span className="text-xs text-muted">
-                    {s.name}, {sub.available} questions available
-                  </span>
-                </span>
-                {busy === key ? <Spinner className="text-forest-900" /> : <Play className="h-4 w-4 text-forest-700" aria-hidden />}
-              </button>
+              />
             );
           }),
         )}
@@ -132,6 +124,59 @@ export function PracticePanel({ category, sections }: { category: string; sectio
       </>
       )}
     </div>
+  );
+}
+
+function PracticeCard({
+  icon,
+  title,
+  sub,
+  available,
+  needed,
+  busy,
+  disabled,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  sub: string;
+  available: number;
+  needed: number;
+  busy: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const ready = needed ? Math.min(100, Math.round((available * 100) / needed)) : 0;
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="group flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4 text-left shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-forest-600 hover:shadow-hover disabled:pointer-events-none disabled:opacity-60"
+    >
+      <span className="flex items-start gap-3">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-forest-50 text-forest-700">{icon}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-bold leading-snug text-forest-950">{title}</span>
+          <span className="block truncate text-xs text-muted">{sub}</span>
+        </span>
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-forest-900 text-white transition-colors group-hover:bg-forest-800">
+          {busy ? <Spinner className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" aria-hidden />}
+        </span>
+      </span>
+      <span className="mt-auto block">
+        <span className="flex items-center justify-between text-xs">
+          <span className="text-muted">Question bank</span>
+          <span className="tabular font-semibold text-ink-soft">{available} ready</span>
+        </span>
+        <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-sage-100">
+          <span
+            className={cn("block h-full rounded-full", ready >= 100 ? "bg-success" : ready > 0 ? "bg-forest-600" : "bg-sage-300")}
+            style={{ width: `${Math.max(ready, available ? 4 : 0)}%` }}
+          />
+        </span>
+      </span>
+    </button>
   );
 }
 
