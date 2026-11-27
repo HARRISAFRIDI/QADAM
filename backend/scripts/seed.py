@@ -225,6 +225,10 @@ async def main() -> None:
     await engine.dispose()
     print("Seed complete: exams, sections, subjects, 11 categories, blueprints, topics.")
 
+    from scripts import seed_starter  # flashcard starter decks (skips existing ones)
+
+    await seed_starter.main()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

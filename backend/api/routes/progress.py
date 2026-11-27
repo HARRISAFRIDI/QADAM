@@ -3,7 +3,7 @@ from typing import Literal
 from fastapi import APIRouter, Query, Response
 
 from api.dependencies import DB, CurrentUser
-from services import progress_service
+from services import dashboard_service, progress_service
 
 router = APIRouter(tags=["progress"])
 NO_STORE = "private, no-store"
@@ -13,7 +13,7 @@ NO_STORE = "private, no-store"
 async def my_overview(user: CurrentUser, db: DB, response: Response) -> dict:
     """Dashboard numbers for the student's selected test (409 `no_track` if none)."""
     response.headers["Cache-Control"] = NO_STORE
-    return await progress_service.overview(db, user)
+    return await dashboard_service.overview(db, user)
 
 
 @router.get("/me/mistakes")

@@ -11,7 +11,12 @@ QADAM is a free website where Pakistani students prepare for the **HAT** and **U
 - revises from the **Mistake Notebook**: every question they got wrong, skipped or flagged is kept there until they answer it correctly in a later session,
 - follows their **dashboard**: progress through the question bank, study streak, accuracy, scores, weak subjects, daily and weekly goals, achievements, recent activity and suggestions based on their answers ("Strengthen Physics", "Revise 12 mistakes", "Take a full mock").
 
-**Built in phases.** Phase 1 (above) is live. The sidebar already shows the next sections marked **Soon**: **Study Plans** (30-day, 14-day and custom) and **Memorize** (flashcards, formulas, spaced repetition) in phase 2; **Learn** (lessons), the **Discussion Forum** (moderated by admins) and the **More** pages (past papers, syllabus, test dates, guides, FAQs, feedback) in phase 3. My Account shows the **Free plan**; a paid plan comes later.
+- follows a **study plan** (30-day, 14-day, or custom up to an exam date): every day has its tasks, such as subject practice, a mixed quiz, flashcards, an essay (USAT) and a full mock every 7th day followed by a mistake-revision day. The plan follows the category's official weightage and gives weak subjects extra days. The last third of the plan practises whole sections, like the real exam. A task is ticked when the student finishes the session started from it, or ticks it by hand,
+- revises with **Memorize**: flashcard decks of vocabulary, formulas and important facts with **spaced repetition**. The student rates each card *Again*, *Hard*, *Good* or *Easy*, and the card comes back after 10 minutes, then 1 day, 3 days and longer gaps. A card with a gap of 3 weeks counts as mastered. Students only see decks for their test and for the subjects in their category.
+
+Admins write flashcard decks in **Admin → Flashcards** (paste many cards at once as `front | back | example` lines). A starter set of 8 decks (about 130 cards: vocabulary, algebra, geometry, physics, chemistry, analytical reasoning, computer science) comes with `python -m scripts.seed_starter`.
+
+**Built in phases.** Phases 1 and 2 are live. Phase 3 is shown in the sidebar and on the More page as **Soon**: **Learn** (lessons), the **Discussion Forum** (moderated by admins) and the More pages (past papers, syllabus, test dates, guides, FAQs, feedback). My Account shows the **Free plan**; a paid plan comes later.
 
 Admins add questions (one by one, or by importing CSV, Excel, PDF, Word or text files), and can **edit, publish/unpublish or delete** any question from the question list. Deleting a question that students have already used archives it instead, so old results stay correct. Admins also build fixed mock papers, grade typed essays and manage students.
 
@@ -95,7 +100,7 @@ python -m venv .venv
 pip install -r requirements-dev.txt
 cp .env.example .env                # fill DATABASE_URL, DATABASE_URL_MIGRATIONS, SECRET_KEY
 alembic upgrade head                # create the tables
-python -m scripts.seed              # HAT/USAT categories, sections, subjects, weightage
+python -m scripts.seed              # HAT/USAT categories, sections, subjects, weightage (+ starter flashcards)
 python -m scripts.create_admin --email you@example.com --name "Your Name"
 uvicorn main:app --reload --port 8000
 
@@ -119,6 +124,7 @@ cd frontend && npm run typecheck && npm run lint && npm run build
 2. Open `https://<api>/api/v1/health/db`. It should say `connected`.
 3. Create a second project with root `frontend`. Set `API_PROXY_TARGET=https://<api>.vercel.app` **before** the first build.
 4. Run `alembic upgrade head` from your own computer whenever the tables change. Vercel does not run migrations.
+5. Once, after the phase 2 tables exist: `python -m scripts.seed_starter` adds the starter flashcard decks. It is safe to run again: it skips decks that already exist.
 
 ## 6. Common problems
 
@@ -143,6 +149,8 @@ The tables in simple words:
 - **mock_tests, mock_test_questions**: fixed mock papers made by an admin.
 - **files, papers**: uploaded papers, answer sheets and solutions.
 - **bookmarks, audit_logs, rate_limits**: saved questions, a log of admin actions, and login/request limits.
+- **decks, cards, card_reviews**: flashcard decks (for one test or both, and optionally one subject), their cards, and each student's spaced-repetition state per card (ease, gap in days, next due time).
+- **study_plans, study_plan_tasks**: a student's plan (one active at a time) and its day-by-day tasks. A task can point to the attempt started from it.
 
 The dashboard numbers and the Mistake Notebook are worked out from **attempts** and **attempt_questions**, so they need no extra tables. Days (for the streak and goals) are counted in Pakistan time.
 
@@ -177,6 +185,15 @@ erDiagram
 
     files ||--o{ papers : "paper / answer sheet / solution"
     users ||--o{ bookmarks : saves
+    exams |o--o{ decks : "for test"
+    subjects |o--o{ decks : "for subject"
+    decks ||--o{ cards : contains
+    users ||--o{ card_reviews : reviews
+    cards ||--o{ card_reviews : reviewed
+    users ||--o{ study_plans : follows
+    categories ||--o{ study_plans : for
+    study_plans ||--o{ study_plan_tasks : has
+    attempts |o--o{ study_plan_tasks : "started from"
     questions ||--o{ bookmarks : saved
     users |o--o{ audit_logs : "admin actions"
 
@@ -306,6 +323,48 @@ erDiagram
         uuid paper_file_id FK
         uuid answer_sheet_file_id FK
         uuid solution_file_id FK
+    }
+    decks {
+        int id PK
+        int exam_id FK "null = both tests"
+        int subject_id FK "null = every category"
+        string kind "vocabulary, formula, fact"
+        string title
+        string status "draft, published"
+    }
+    cards {
+        int id PK
+        int deck_id FK
+        text front
+        text back
+        text example
+    }
+    card_reviews {
+        uuid user_id PK
+        int card_id PK
+        float ease
+        int interval_days
+        timestamp due_at
+    }
+    study_plans {
+        uuid id PK
+        uuid user_id FK "one active plan"
+        int category_id FK
+        string kind "30, 14, custom"
+        date start_date
+        int days
+        date exam_date
+        int daily_minutes
+        string status "active, archived"
+    }
+    study_plan_tasks {
+        bigint id PK
+        uuid plan_id FK
+        int day
+        string kind "practice, quiz, mock, mistakes, memorize, essay"
+        int ref_id "subject or section"
+        uuid attempt_id FK
+        timestamp done_at
     }
     bookmarks {
         uuid user_id PK

@@ -267,6 +267,8 @@ export interface Overview {
   goals: { key: "daily" | "weekly" | "mock"; label: string; current: number; target: number }[];
   recommendations: { kind: string; title: string; body: string; action: RecAction }[];
   achievements: { key: string; title: string; description: string; earned: boolean }[];
+  memorize: { due: number; new: number; reviewed_today: number };
+  plan_today: { day: number; days: number; percent: number; behind: number; finished: boolean; tasks: PlanTask[] } | null;
 }
 
 export interface MistakeItem {
@@ -289,4 +291,82 @@ export interface MistakeItem {
 export interface Mistakes extends Page<MistakeItem> {
   counts: { all: number; wrong: number; skipped: number; flagged: number };
   subjects: { id: number; name: string; count: number }[];
+}
+
+// ---------------------------------------------------------------- memorize
+
+export type DeckKind = "vocabulary" | "formula" | "fact";
+export type CardStatus = "new" | "learning" | "mastered";
+
+export interface DeckSummary {
+  id: number;
+  kind: DeckKind;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  total: number;
+  new: number;
+  due: number;
+  mastered: number;
+}
+
+export interface Decks {
+  decks: DeckSummary[];
+  totals: { cards: number; due: number; new: number; mastered: number; reviewed_today: number };
+}
+
+export interface DeckDetail {
+  id: number;
+  kind: DeckKind;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  cards: { id: number; front: string; back: string; example: string | null; status: CardStatus; due_at: string | null }[];
+}
+
+export type Grade = "again" | "hard" | "good" | "easy";
+
+export interface QueueCard {
+  id: number;
+  front: string;
+  back: string;
+  example: string | null;
+  deck_id: number;
+  deck: string;
+  kind: DeckKind;
+  status: CardStatus;
+  preview: Record<Grade, string>;
+}
+
+// ---------------------------------------------------------------- study plans
+
+export type PlanTaskKind = "practice_subject" | "practice_section" | "quiz" | "mock" | "mistakes" | "memorize" | "essay";
+
+export interface PlanTask {
+  id: number;
+  kind: PlanTaskKind;
+  title: string;
+  ref_id: number | null;
+  count: number | null;
+  minutes: number;
+  done: boolean;
+  manual: boolean;
+  attempt_id: string | null;
+  in_progress: boolean;
+}
+
+export interface StudyPlan {
+  id: string;
+  kind: "30" | "14" | "custom";
+  days: number;
+  start_date: string;
+  end_date: string;
+  exam_date: string | null;
+  daily_minutes: number;
+  category: string;
+  matches_track: boolean;
+  today: number;
+  finished: boolean;
+  progress: { done: number; total: number; percent: number; behind: number };
+  schedule: { day: number; date: string; tasks: PlanTask[]; done: boolean }[];
 }

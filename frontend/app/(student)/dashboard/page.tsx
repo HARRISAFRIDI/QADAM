@@ -5,6 +5,7 @@ import {
   Award,
   BookOpen,
   Brain,
+  CalendarCheck,
   CheckCircle2,
   Clock3,
   FileText,
@@ -25,6 +26,7 @@ import {
 import { Card, CardHeader, EmptyState } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/button";
 import { Ring } from "@/components/ui/ring";
+import { TaskRow } from "@/features/plans/plan-client";
 import { StartButton } from "@/features/prepare/start-button";
 import { pageApi, requireUser } from "@/lib/api/server";
 import type { HistoryItem, Overview, Page } from "@/lib/api/types";
@@ -50,6 +52,8 @@ const REC_STYLE: Record<string, { icon: typeof Timer; hue: Hue }> = {
   new: { icon: Target, hue: HUES.emerald },
   mock: { icon: Timer, hue: HUES.violet },
   goal: { icon: Zap, hue: HUES.sky },
+  plan: { icon: CalendarCheck, hue: HUES.blue },
+  memorize: { icon: Brain, hue: HUES.violet },
 };
 
 function pct(h: HistoryItem): number | null {
@@ -348,6 +352,49 @@ export default async function DashboardPage() {
         </div>
 
         <div className="min-w-0 space-y-6">
+          {/* Today's plan */}
+          <Card className="relative overflow-hidden rounded-3xl p-5">
+            <span className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-blue-500 via-indigo-500 to-violet-500" aria-hidden />
+            {ov.plan_today ? (
+              <>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="flex items-center gap-2 text-base font-bold">
+                    <CalendarCheck className="h-4 w-4 text-blue-600" aria-hidden />
+                    {ov.plan_today.finished ? "Plan finished" : `Today's plan · day ${ov.plan_today.day}/${ov.plan_today.days}`}
+                  </h3>
+                  <Link href="/study-plans" className="tabular text-sm font-semibold text-blue-700 hover:underline">
+                    {ov.plan_today.percent}%
+                  </Link>
+                </div>
+                {ov.plan_today.behind > 0 && (
+                  <p className="mt-2 text-xs font-semibold text-amber-700">{ov.plan_today.behind} earlier tasks to catch up</p>
+                )}
+                {ov.plan_today.finished ? (
+                  <p className="mt-2 text-sm text-muted">Well done. Make a new plan to keep going.</p>
+                ) : (
+                  <div className="mt-4 space-y-2">
+                    {ov.plan_today.tasks.map((t) => (
+                      <TaskRow key={t.id} task={t} compact />
+                    ))}
+                  </div>
+                )}
+                <Link href="/study-plans" className="mt-4 inline-block text-xs font-semibold text-blue-700 hover:underline">
+                  Open full plan
+                </Link>
+              </>
+            ) : (
+              <>
+                <h3 className="flex items-center gap-2 text-base font-bold">
+                  <CalendarCheck className="h-4 w-4 text-blue-600" aria-hidden /> Study plan
+                </h3>
+                <p className="mt-1 text-sm text-muted">Get a 30-day, 14-day or custom plan for {cat.code}: what to do every day, built around your weak subjects.</p>
+                <LinkButton href="/study-plans" size="sm" className="mt-4">
+                  Make my plan <ArrowRight className="h-4 w-4" aria-hidden />
+                </LinkButton>
+              </>
+            )}
+          </Card>
+
           {/* Goals */}
           <Card className="rounded-3xl p-5">
             <h3 className="flex items-center gap-2 text-base font-bold">
@@ -392,6 +439,8 @@ export default async function DashboardPage() {
                 { href: "/quizzes", label: "Quizzes", icon: Zap, hue: HUES.sky },
                 { href: "/mocks", label: "Mock tests", icon: Timer, hue: HUES.violet },
                 { href: "/mistakes", label: `Mistakes${ov.mistakes.total ? ` (${ov.mistakes.total})` : ""}`, icon: NotebookPen, hue: HUES.rose },
+                { href: "/memorize", label: `Flashcards${ov.memorize.due ? ` (${ov.memorize.due} due)` : ""}`, icon: Brain, hue: HUES.violet },
+                { href: "/study-plans", label: "Study plan", icon: CalendarCheck, hue: HUES.blue },
               ].map((a) => (
                 <Link
                   key={a.href}
@@ -446,9 +495,9 @@ export default async function DashboardPage() {
             <p className="flex items-center gap-2 text-sm font-bold text-forest-950">
               <Brain className="h-4 w-4 text-violet-600" aria-hidden /> Coming next
             </p>
-            <p className="mt-1 text-sm text-muted">Study plans, lessons and flashcards for {cat.exam} are on the way.</p>
+            <p className="mt-1 text-sm text-muted">Lessons for every {cat.exam} subject and a student forum are on the way.</p>
             <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
-              {["Study Plans", "Learn", "Memorize", "Forum"].map((x) => (
+              {["Learn", "Discussion Forum", "Past papers"].map((x) => (
                 <span key={x} className="inline-flex items-center gap-1 rounded-full bg-sage-100 px-2.5 py-1 font-semibold text-ink-soft">
                   <Clock3 className="h-3 w-3" aria-hidden /> {x}
                 </span>

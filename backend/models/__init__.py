@@ -7,12 +7,18 @@ from models.attempt import (
     MockTestQuestion,
     Result,
 )
+from models.learning import Card, CardReview, Deck, StudyPlan, StudyPlanTask
 from models.misc import AuditLog, Bookmark, FileObject, Paper, RateLimit
 from models.question import Question
 from models.taxonomy import Blueprint, Category, Exam, Section, Subject, Topic
 from models.user import User
 
 __all__ = [
+    "Card",
+    "CardReview",
+    "Deck",
+    "StudyPlan",
+    "StudyPlanTask",
     "Attempt",
     "AttemptQuestion",
     "AuditLog",

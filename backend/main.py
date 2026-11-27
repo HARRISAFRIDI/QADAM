@@ -7,7 +7,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
-from api.routes import attempts, auth, catalog, health, progress, results
+from api.routes import attempts, auth, catalog, health, learning, progress, results
 from api.routes.admin import routes as admin_routes
 from core.config import get_settings
 from core.errors import install_error_handlers
@@ -53,9 +53,11 @@ for r in (
     attempts.router,
     results.router,
     progress.router,
+    learning.router,
 ):
     v1.include_router(r)
 v1.include_router(admin_routes.router)
+v1.include_router(learning.admin)
 app.include_router(v1)
 
 

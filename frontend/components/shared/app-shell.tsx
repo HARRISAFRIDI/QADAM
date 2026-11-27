@@ -44,12 +44,12 @@ const STUDENT: Group[] = [
   {
     title: "Prepare",
     items: [
-      { href: "/study-plans", label: "Study Plans", icon: CalendarCheck, soon: true },
+      { href: "/study-plans", label: "Study Plans", icon: CalendarCheck },
       { href: "/learn", label: "Learn", icon: BookOpen, soon: true },
       { href: "/practice", label: "Practice", icon: Target },
       { href: "/quizzes", label: "Quizzes", icon: Zap },
       { href: "/mocks", label: "Mock Tests", icon: Timer },
-      { href: "/memorize", label: "Memorize", icon: Brain, soon: true },
+      { href: "/memorize", label: "Memorize", icon: Brain },
       { href: "/mistakes", label: "Mistake Notebook", icon: NotebookPen },
     ],
   },
@@ -72,6 +72,7 @@ const ADMIN: Group[] = [
       { href: "/admin/mocks", label: "Mock tests", icon: ClipboardList },
       { href: "/admin/essays", label: "Essays", icon: PenLine },
       { href: "/admin/papers", label: "Papers", icon: FileText },
+      { href: "/admin/decks", label: "Flashcards", icon: Brain },
       { href: "/admin/taxonomy", label: "Structure", icon: Network },
     ],
   },
