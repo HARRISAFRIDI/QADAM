@@ -66,15 +66,30 @@ export default async function StudentsPage({ searchParams }: { searchParams: Pro
                       {s.id === me?.id ? (
                         <span className="text-xs text-muted">You</span>
                       ) : (
-                        <ActionButton
-                          path={`/admin/students/${s.id}`}
-                          method="PATCH"
-                          body={{ is_active: !s.is_active }}
-                          variant={s.is_active ? "ghost" : "primary"}
-                          confirmText={s.is_active ? `Disable ${s.full_name}'s account?` : undefined}
-                        >
-                          {s.is_active ? "Disable" : "Enable"}
-                        </ActionButton>
+                        <div className="flex flex-wrap gap-1">
+                          <ActionButton
+                            path={`/admin/students/${s.id}`}
+                            method="PATCH"
+                            body={{ is_active: !s.is_active }}
+                            variant={s.is_active ? "ghost" : "primary"}
+                            confirmText={s.is_active ? `Disable ${s.full_name}'s account?` : undefined}
+                          >
+                            {s.is_active ? "Disable" : "Enable"}
+                          </ActionButton>
+                          <ActionButton
+                            path={`/admin/students/${s.id}`}
+                            method="PATCH"
+                            body={{ role: s.role === "admin" ? "student" : "admin" }}
+                            variant="ghost"
+                            confirmText={
+                              s.role === "admin"
+                                ? `Remove admin access from ${s.full_name}?`
+                                : `Make ${s.full_name} an admin? They will be able to manage all questions, tests and students.`
+                            }
+                          >
+                            {s.role === "admin" ? "Remove admin" : "Make admin"}
+                          </ActionButton>
+                        </div>
                       )}
                     </td>
                   </tr>
