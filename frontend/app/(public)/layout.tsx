@@ -29,9 +29,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             <p className="mt-2 text-sm text-sage-300">Your Next Step Starts Here.</p>
           </div>
           <div className="flex flex-col gap-2 md:items-end">
-            <Link href="/login?next=/admin" className="text-sm font-semibold text-sage-200 hover:text-white hover:underline">
-              Admin login
-            </Link>
             <p className="text-xs text-sage-500">© {new Date().getFullYear()} QADAM. Preparation platform for HAT &amp; USAT.</p>
           </div>
         </div>
