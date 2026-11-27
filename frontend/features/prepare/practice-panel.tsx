@@ -160,7 +160,7 @@ function PracticeCard({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-4 pt-5 text-left shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 disabled:pointer-events-none disabled:opacity-60",
+        "group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-4 pt-5 text-left shadow-card transition-[transform,border-color] duration-200 hover:-translate-y-1 disabled:pointer-events-none disabled:opacity-60",
         hue.hover,
       )}
     >
@@ -173,7 +173,7 @@ function PracticeCard({
         </span>
         <span
           className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-[transform,background-color,color] duration-300 group-hover:scale-110",
+            "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-transform duration-200 group-hover:scale-110",
             hue.soft,
             hue.text,
           )}

@@ -78,7 +78,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ exam:
         <h2 className="mb-3 text-sm font-bold text-muted">Choose how to prepare</h2>
         <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <Card className="relative overflow-hidden rounded-3xl border-indigo-100 bg-linear-to-br from-blue-50 via-indigo-50 to-violet-100 p-6 shadow-card sm:p-7">
-            <span className="pointer-events-none absolute -right-14 -top-14 h-48 w-48 rounded-full bg-violet-300/30 blur-2xl" aria-hidden />
+            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgb(196_181_253/0.45),transparent_40%)]" aria-hidden />
             <Timer className="pointer-events-none absolute -bottom-6 right-4 h-36 w-36 text-indigo-500/10" aria-hidden />
             <span className="relative grid h-12 w-12 place-items-center rounded-2xl bg-linear-to-br from-blue-500 to-indigo-600 text-white shadow-[0_6px_14px_-4px_rgb(79_70_229/0.6)]">
               <Timer className="h-6 w-6" aria-hidden />

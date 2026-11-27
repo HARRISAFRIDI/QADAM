@@ -71,8 +71,10 @@ export default async function DashboardPage() {
     <>
       {/* Welcome banner */}
       <section className="relative mb-8 overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-indigo-600 to-violet-600 text-white shadow-[0_24px_48px_-20px_rgb(79_70_229/0.55)]">
-        <span className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-sky-400/30 blur-3xl" aria-hidden />
-        <span className="pointer-events-none absolute -bottom-24 right-10 h-72 w-72 rounded-full bg-fuchsia-400/30 blur-3xl" aria-hidden />
+        <span
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_0%,rgb(56_189_248/0.35),transparent_40%),radial-gradient(circle_at_80%_110%,rgb(232_121_249/0.35),transparent_45%)]"
+          aria-hidden
+        />
         <StepsArt className="pointer-events-none absolute -right-6 bottom-0 hidden h-48 w-auto md:block lg:right-8" />
         <div className="relative px-5 py-7 sm:px-8 sm:py-9 md:pr-72">
           <p lang="ur" dir="rtl" className="urdu text-left text-xl text-sky-100">
@@ -82,7 +84,7 @@ export default async function DashboardPage() {
           <p className="mt-2 max-w-xl text-blue-50/90">Choose your test to see the mocks and practice for your category.</p>
           <dl className="mt-7 grid max-w-lg grid-cols-3 gap-2 sm:gap-3">
             {stats.map((s) => (
-              <div key={s.label} className="min-w-0 rounded-2xl border border-white/20 bg-white/15 px-3 py-3 backdrop-blur-sm sm:px-4">
+              <div key={s.label} className="min-w-0 rounded-2xl border border-white/20 bg-white/15 px-3 py-3 sm:px-4">
                 <dt className="text-xs font-medium text-blue-50/85">{s.label}</dt>
                 <dd className="tabular mt-0.5 truncate text-lg font-extrabold text-white sm:text-xl">{s.value}</dd>
               </div>
@@ -152,18 +154,18 @@ export default async function DashboardPage() {
               key={exam.id}
               href={`/prepare/${exam.code.toLowerCase()}`}
               className={cn(
-                "group flex flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1",
+                "group flex flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-card transition-[transform,border-color] duration-200 hover:-translate-y-1",
                 hue.hover,
               )}
             >
               <div className={cn("relative overflow-hidden px-6 pb-6 pt-5 text-white", hue.grad)}>
                 <Icon
-                  className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 text-white/10 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                  className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 text-white/10"
                   aria-hidden
                 />
                 <span className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10" aria-hidden />
                 <div className="relative flex items-center gap-4">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 ring-1 ring-white/30">
                     <Icon className="h-6 w-6" aria-hidden />
                   </span>
                   <div className="min-w-0">

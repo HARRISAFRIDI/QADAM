@@ -44,13 +44,13 @@ export default async function ExamPage({ params }: { params: Promise<{ exam: str
               key={c.id}
               href={`/prepare/${exam.code.toLowerCase()}/${c.code.toLowerCase()}`}
               className={cn(
-                "group flex flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1",
+                "group flex flex-col overflow-hidden rounded-3xl border border-line bg-surface shadow-card transition-[transform,border-color] duration-200 hover:-translate-y-1",
                 hue.hover,
               )}
             >
               <div className={cn("relative overflow-hidden px-5 py-5 text-white", hue.grad)}>
                 <GraduationCap
-                  className="pointer-events-none absolute -bottom-5 -right-3 h-24 w-24 text-white/10 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                  className="pointer-events-none absolute -bottom-5 -right-3 h-24 w-24 text-white/10"
                   aria-hidden
                 />
                 <div className="relative flex items-start gap-3">
