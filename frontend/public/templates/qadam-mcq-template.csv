@@ -1,0 +1,4 @@
+exam,subject,topic,question,option_a,option_b,option_c,option_d,correct,explanation,solution,difficulty,marks,source
+HAT,Quantitative,Percentages,"What is 20% of 150?",20,25,30,35,C,"20/100 x 150 = 30","Convert 20% to 0.2 and multiply: 0.2 x 150 = 30.",easy,1,Sample
+HAT,English / Verbal,Synonyms,"Choose the synonym of ABUNDANT.",Scarce,Plentiful,Rare,Meagre,B,"Abundant means existing in large quantities.",,easy,1,Sample
+USAT,Physics,Kinematics,"A car accelerates from rest at 2 m/s^2. What is its speed after 5 s?",5 m/s,7 m/s,10 m/s,12 m/s,C,"v = u + at = 0 + 2 x 5 = 10 m/s",,medium,1,Sample
