@@ -199,7 +199,7 @@ function ScoreRing({ pct }: { pct: number }) {
           cy="60"
           r={r}
           fill="none"
-          stroke={pct >= 50 ? "#11683e" : "#d39a2c"}
+          stroke={pct >= 50 ? "#2563eb" : "#f59e0b"}
           strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={c}

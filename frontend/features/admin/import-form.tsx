@@ -180,11 +180,11 @@ export function ImportForm({ taxonomy }: { taxonomy: Taxonomy }) {
           </div>
 
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={createTopics} onChange={(e) => setCreateTopics(e.target.checked)} className="h-4 w-4 accent-[#0b6b3a]" />
+            <input type="checkbox" checked={createTopics} onChange={(e) => setCreateTopics(e.target.checked)} className="h-4 w-4 accent-[#2563eb]" />
             Create topics that don&apos;t exist yet
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={skipInvalid} onChange={(e) => setSkipInvalid(e.target.checked)} className="h-4 w-4 accent-[#0b6b3a]" />
+            <input type="checkbox" checked={skipInvalid} onChange={(e) => setSkipInvalid(e.target.checked)} className="h-4 w-4 accent-[#2563eb]" />
             Skip invalid questions (import only the valid ones)
           </label>
           <div className="flex flex-wrap gap-2">

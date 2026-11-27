@@ -24,8 +24,8 @@ export default function LandingPage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-line bg-surface">
-        <div className="container-page grid gap-12 py-14 md:grid-cols-[1.1fr_0.9fr] md:items-center md:py-20">
+      <section className="container-page pt-4 sm:pt-6">
+        <div className="grid gap-12 rounded-2xl border border-forest-100 bg-forest-50 px-5 py-12 sm:px-10 md:grid-cols-[1.1fr_0.9fr] md:items-center md:py-16">
           <div>
             <p lang="ur" dir="rtl" className="urdu text-left text-2xl text-forest-700 sm:text-3xl">
               آپ کا اگلا قدم یہیں سے شروع ہوتا ہے

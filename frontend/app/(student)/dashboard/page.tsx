@@ -25,7 +25,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="mb-8">
+      <div className="mb-8 rounded-xl border border-forest-100 bg-forest-50 px-5 py-6 sm:px-8">
         <p lang="ur" dir="rtl" className="urdu text-left text-xl text-forest-700">
           السلام علیکم، خوش آمدید
         </p>

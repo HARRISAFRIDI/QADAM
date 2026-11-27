@@ -4,14 +4,14 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-150 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px select-none";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-150 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px select-none";
 
 const variants = {
   primary: "bg-forest-900 text-white hover:bg-forest-800 shadow-card",
   secondary: "bg-surface text-forest-900 border border-line-strong hover:border-forest-700 hover:bg-forest-50",
-  gold: "bg-gold-500 text-forest-950 hover:bg-gold-600 hover:text-white",
+  gold: "bg-gold-500 text-forest-950 hover:bg-gold-600",
   ghost: "text-forest-900 hover:bg-forest-50",
-  danger: "bg-danger text-white hover:bg-[#9a1d14]",
+  danger: "bg-danger text-white hover:bg-[#991b1b]",
   link: "text-forest-700 underline-offset-4 hover:underline px-0 h-auto",
 } as const;
 

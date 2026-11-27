@@ -29,7 +29,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b6b3a",
+  themeColor: "#2563eb",
+  // Light-only site: stops Chrome/Android "auto dark mode" from inverting the page.
+  colorScheme: "only light",
   width: "device-width",
   initialScale: 1,
 };

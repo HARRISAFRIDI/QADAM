@@ -279,7 +279,7 @@ export function EssayEngine({ state }: { state: EssayState }) {
                     <input
                       type="radio"
                       name={`topic-${t}`}
-                      className="mt-1 h-4 w-4 accent-[#0b6b3a]"
+                      className="mt-1 h-4 w-4 accent-[#2563eb]"
                       checked={d.topicId === opt.id}
                       disabled={readOnly}
                       onChange={() => update(t, { topicId: opt.id })}

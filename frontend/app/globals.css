@@ -8,54 +8,55 @@
   /* Web font for the few Urdu phrases (landing page, dashboard). */
   --font-urdu-web: var(--font-nastaliq), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", serif;
 
-  /* Primary: Pakistan flag green, deepened for text and buttons. */
-  --color-forest-950: #0a3d22;
-  --color-forest-900: #0b6b3a;
-  --color-forest-800: #085a31;
-  --color-forest-700: #11683e;
-  --color-forest-600: #1a7d4c;
-  --color-forest-100: #d7ebdf;
-  --color-forest-50: #edf6f0;
+  /* Light blue theme from the Google Stitch design system ("QADAM light blue theme").
+     Token names (forest/gold/sage) are kept so no component classes change:
+     forest = brand blue, gold = amber accent, sage = slate neutrals. */
+  --color-forest-950: #0f172a; /* deep navy: headings */
+  --color-forest-900: #2563eb; /* royal blue: primary buttons */
+  --color-forest-800: #1d4ed8; /* button hover */
+  --color-forest-700: #1d4ed8; /* links, icons, Urdu phrases */
+  --color-forest-600: #3b82f6;
+  --color-forest-100: #dbeafe; /* light panel borders */
+  --color-forest-50: #eff6ff;  /* light blue fills */
 
-  /* Neutral greens for soft fills. */
-  --color-sage-500: #869a8f;
-  --color-sage-300: #b6c5bc;
-  --color-sage-200: #d4ded8;
-  --color-sage-100: #e9efeb;
+  --color-sage-500: #94a3b8;
+  --color-sage-300: #cbd5e1;
+  --color-sage-200: #e2e8f0;
+  --color-sage-100: #f1f5f9;
 
-  /* One warm accent, used sparingly (timer, marked, essays). */
-  --color-gold-700: #845300;
-  --color-gold-600: #a26a06;
-  --color-gold-500: #d39a2c;
-  --color-gold-200: #f1ddb0;
-  --color-gold-100: #fbf3e1;
+  --color-gold-700: #b45309;
+  --color-gold-600: #d97706;
+  --color-gold-500: #f59e0b;
+  --color-gold-200: #fde68a;
+  --color-gold-100: #fef3c7;
 
-  --color-paper: #f3f5f4;
+  --color-paper: #f5f8ff;
   --color-surface: #ffffff;
-  --color-line: #e1e6e3;
-  --color-line-strong: #cbd4ce;
-  --color-ink: #121a16;
-  --color-ink-soft: #35413b;
-  --color-muted: #5d6a63;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-ink: #0f172a;
+  --color-ink-soft: #334155;
+  --color-muted: #556275;
 
-  --color-success: #1f7a47;
-  --color-success-soft: #e3f2e9;
-  --color-danger: #b42318;
-  --color-danger-soft: #fbeae8;
-  --color-warning: #b7791f;
-  --color-info: #2f6690;
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-warning: #b45309;
+  --color-info: #1d4ed8;
 
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
 
-  --shadow-card: 0 1px 2px rgb(1 42 21 / 0.05);
-  --shadow-raised: 0 10px 30px -12px rgb(15 35 25 / 0.18), 0 2px 6px rgb(15 35 25 / 0.05);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04);
+  --shadow-raised: 0 4px 16px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.04);
 }
 
 @layer base {
   html {
+    color-scheme: only light;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
   }
@@ -66,11 +67,11 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background: var(--color-gold-200);
+    background: var(--color-forest-100);
     color: var(--color-forest-950);
   }
   :focus-visible {
-    outline: 2px solid var(--color-gold-500);
+    outline: 2px solid var(--color-forest-600);
     outline-offset: 2px;
   }
   h1, h2, h3, h4 {
